@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal</title>
+    <link rel="stylesheet" href="./login.css">
+    <link rel="stylesheet" href="./principal.css">
+    <script src="https://kit.fontawesome.com/ca65d7f2ea.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header class="header">
+        <a href="" class="header-text">RFID</a>
+
+       
+    </header>
+    <div class="container-menu">
+        <nav class="nav nav--collapse">
+            <div class="burger">
+                <div class="line-1"></div>
+                <div class="line-2"></div>
+                <div class="line-3"></div>
+            </div>
+            <ul class="nav-items">
+                <li class="nav-item">
+                    <a href="#" class="nav-item__link nav-item__link--active">
+                        <div>
+                            <i class="fa-sharp fa-solid fa-house"></i>
+                        </div>
+                        <span>Incio</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-item--active">
+                    <a href="#" class="nav-item__link">
+                        <div>
+                            <i class="fa-solid fa-wrench "></i>
+                        </div>
+                        
+                        <span>Configurar</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="#" class="nav-item__link">
+                        <div>
+                            <i class="fa-solid fa-door-open icon-exit"></i>
+                        </div>
+                        
+                        <span>Salir</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <form class="main" method="post" action="/home">
+            <div class="container-rfid">
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="#nombre#" name="nombre">
+                    <label for="">Nombre de red</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="#contra#" name="contra">
+                    <label for="">Contraseña</label>
+                </div>
+                
+                <div class="input-container">
+                    <input type="text" placeholder=" "value="#servidor#" name="servidor">
+                    <label for="">Servidor</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="#api#" name="api">
+                    <label for="">Ruta api</label>
+                </div>
+
+                <div class="container-buttons">
+                    <button class="btn btn-success">Guardar</button>
+                    <button class="btn btn-danger">Cancelar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        const burger = document.querySelector(".burger");
+        const navContainer = document.querySelector(".nav");
+
+        burger.addEventListener('click', () => {
+            burger.classList.toggle("burger--active");
+            navContainer.classList.toggle("nav--collapse");
+
+        });
+      
+
+
+    </script>
+</body>
+
+</html>

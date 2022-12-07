@@ -1,0 +1,145 @@
+*,
+        *::after,
+        *::before{
+            box-sizing: border-box;
+        }
+
+        body{
+            padding: 0px;
+            margin: 0px;
+            font-family: sans-serif;
+            min-height: 100vh;
+
+        }
+
+        .center-flex{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .frm-container{
+            background-color:rgb(255, 255, 255);
+            border-radius:5px;
+            min-width: 250px;
+
+            box-shadow:0px 4px 20px rgba(0, 0, 0, 0.616);
+        
+        }
+        .frm-header{
+            text-align:center;
+            color: rgb(255, 255, 255);
+            text-shadow: 0px 0px 10px black;
+            letter-spacing:3px;
+            font-weight: bold;
+            padding:20px;
+            border-bottom:3px solid rgba(0, 0, 0, 0.514);
+            background: url(./indice.jpg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .frm-header > h2{
+            margin: 0;
+            padding: 0;
+
+        }
+        .input-container{
+            /* margin-top: 20px; */
+            font-size: 16px;
+            /* display:flex; */
+            /* justify-content:center; */
+            position: relative;
+            width: fit-content;
+        }
+        .input-container > input{
+            padding:15px 10px;
+            appearance: none;
+            font-size:18px;
+            caret-color: rgb(0, 47, 255);
+            border: none;
+            outline: none;
+            min-width: 230px;
+            border-radius: 5px;
+            transition:.4s all;
+            border: 1px solid rgba(80, 80, 80, 0.336);
+        }
+        .input-container > input:focus{
+            outline:3px solid rgba(109, 140, 223, 0.856);
+        }
+
+        .input-container > label{
+            position:absolute;
+            top: 50%;
+            left: 10px;
+            pointer-events: none;
+
+            color: rgba(0, 0, 0, 0.705);
+            transform: translateY(-50%);
+            transform-origin:left center;
+            transition: 0.3s all;
+        }
+        .input-container > input:focus + label,
+        .input-container > input:not(:placeholder-shown) + label{
+            transform: translateY(0%) scale(.8);
+            top: 0;
+        }
+
+
+        .input-password > input{
+            padding-right: 35px;
+        }
+        .input-password__img{
+            position: absolute;
+            top: 50%;
+            right: 5px;
+            transform:translateY(-50%);
+            cursor: pointer;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+        .input-password__img > svg{
+            width:30px;
+            height:10px;
+            height:fit-content;
+            vertical-align: middle;
+            /* background-color:red; */
+        }
+        .input-password__img .line{
+            width:100%;
+            height:2px;
+            position:absolute;
+            background-color:rgb(0, 0, 0);
+            transition: .4s all;
+            transform: rotate(-45deg) scaleX(0);
+            
+        }
+        .input-password__img--active .line{
+            transform: rotate(-45deg)  scaleX(1);
+        }
+        .frm-main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding:20px;
+            gap: 30px;
+            border-bottom: 3px solid rgb(80, 80, 80);
+        }
+
+        .frm-footer{
+            padding:10px 10px;
+        }
+        .btn{
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            outline:none;
+            border: none;
+            background-color: rgb(255, 255, 255);
+        }
+        .btn-iniciar{
+            color:white;
+            width:100%;
+            border-radius: 25px;
+            background-color: rgb(67, 117, 117);
+        }
