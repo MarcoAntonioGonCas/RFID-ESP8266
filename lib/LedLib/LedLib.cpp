@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <LedLib.h>
-void ledLibClass::begin(uint8 pin, TipoLed tipoLed)
+void ledLibClass::begin(uint8_t pin, TipoLed tipoLed)
 {
     this->tipo = tipoLed;
     this->pinLed = pin;
@@ -25,6 +25,12 @@ void ledLibClass::apagar()
 }
 void ledLibClass::prender(ulong_t tiempoEn, ulong_t tiempoApa, uint32_t veces)
 {
+    ulong_t tiempoTranscurrido = millis() - tiempoIni;
+    ulong_t tiempoCiclo = tiempoPrendido + tiempoApagado;
+    ulong_t tiempoTotal = tiempoCiclo * veces;
+
+    if(tiempoTranscurrido<tiempoTotal)return;
+
     this->tiempoIni = millis();
     this->tiempoPrendido = tiempoEn;
     this->tiempoApagado = tiempoApa;
@@ -32,6 +38,10 @@ void ledLibClass::prender(ulong_t tiempoEn, ulong_t tiempoApa, uint32_t veces)
     this->infinito = false;
 }
 void ledLibClass::prenderInfinito(ulong_t tiempoEn, ulong_t tiempoApa){
+    if(this->tiempoPrendido == tiempoEn &&
+     this->tiempoApagado == tiempoApa){
+        return;
+    }
     this->tiempoIni = millis();
     this->tiempoPrendido = tiempoEn;
     this->tiempoApagado = tiempoApa;
@@ -48,8 +58,10 @@ ledLibClass::ledLibClass()
 void ledLibClass::parar()
 {
     this->tiempoIni = 0;
+    this->tiempoPrendido = 0;
+    this->tiempoApagado = 0;
+    this->veces = 0;
     this->infinito = false;
-    apagar();
 }
 void ledLibClass::loop()
 {

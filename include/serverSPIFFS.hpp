@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 String GetContentType(String filename)
 {
   if(filename.endsWith(".htm")) return "text/html";
