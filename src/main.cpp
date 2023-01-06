@@ -6,6 +6,7 @@
 //-----------------Pantalla oled-----------------------
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Wire.h>
 #include "pantallaOled.hpp"
 
 //---------------------------------------
@@ -32,13 +33,13 @@ ledLibClass ledWIFI;
 AsyncWebSocket asyncSocket("/ws");
 AsyncWebServer asyncServer(80);
 DNSServer dnsServer;
-
+bool mostrarIPSTA = true;
 
 //----------------------------------------
 
 
 void iniciarSocket(){
-
+  asyncSocket.onEvent(&onWsEvent);
 }
 void iniciarServerYDNS(){
 
@@ -48,16 +49,23 @@ void iniciarServerYDNS(){
   //--------------------------------------------
   addRouters(asyncServer);
   asyncServer.addHandler(&asyncSocket);
+  iniciarSocket();
   asyncServer.begin();
   //----------------------------
 
 }
+
 void actualizaEstadoWiFi(){
   if(!WiFi.localIP().isSet()){
     ledWIFI.prenderInfinito(1000,500);
+    mostrarIPSTA = true;
   }else{
     ledWIFI.parar();
     ledWIFI.prender();
+    if(mostrarIPSTA){
+      Serial.printf("Conectado a WIFI %s con ip: %s",WiFi.SSID().c_str(),WiFi.localIP().toString().c_str());
+      mostrarIPSTA = false;
+    }
   }
 }
 void iniciarLeds(){
@@ -77,12 +85,9 @@ bool iniciarLittleFS(){
 
   return true;
 }
-void setup()
-{
-  Serial.begin(9600);
-  SPI.begin();
-  rfid.PCD_Init();
-  //-----------LEDS-----------------
+
+bool iniciaTodo(){
+//-----------LEDS-----------------
   iniciarLeds();
   //----------LITTLEFS------------------
   iniciarLittleFS();
@@ -92,10 +97,31 @@ void setup()
   conectarWiFi();
   //-----------Servidor-----------------
   iniciarServerYDNS();
+  //-----------Oled----------------
+  if(iniciaDisplay()){
+    Serial.println(F("Display oled iniciado con exito"));
+  }else{
+    Serial.println(F("Fallo al iniciar Display oled"));
+  }
+
+
+  return true;
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  SPI.begin();
+  rfid.PCD_Init();
+
+
+  iniciaTodo();
+  
 }
 
 void loop()
 {
+  display.clearDisplay();
   dnsServer.processNextRequest();
   actualizaEstadoWiFi();
   ledRFID.loop();
@@ -111,4 +137,10 @@ void loop()
     Serial.printf("Espacio disponible stack %d \n",ESP.getFreeContStack());
     Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
   }
+
+  dibujaEstadoWifi(map(WiFi.RSSI(),-135,0,1,5),WiFi.RSSI());
+  // Serial.printf("RSSI : %d \n",WiFi.RSSI());
+  display.display();
+  enviarInfoCada(2000,asyncSocket);
+  comprobarClientes(1000,asyncSocket);
 }

@@ -6,16 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Principal</title>
-    <link rel="stylesheet" href="./login.css">
-    <link rel="stylesheet" href="./principal.css">
+    <link rel="stylesheet" href="./www/login.css">
+    <link rel="stylesheet" href="./www/principal.css">
     <script src="https://kit.fontawesome.com/ca65d7f2ea.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <header class="header">
         <a href="" class="header-text">RFID</a>
-
-       
     </header>
     <div class="container-menu">
         <nav class="nav nav--collapse">
@@ -38,7 +36,7 @@
                         <div>
                             <i class="fa-solid fa-wrench "></i>
                         </div>
-                        
+
                         <span>Configurar</span>
                     </a>
                 </li>
@@ -47,42 +45,123 @@
                         <div>
                             <i class="fa-solid fa-door-open icon-exit"></i>
                         </div>
-                        
+
                         <span>Salir</span>
                     </a>
                 </li>
             </ul>
         </nav>
-        <form class="main" method="post" action="/home">
-            <div class="container-rfid">
-                <div class="input-container">
-                    <input type="text" placeholder=" " value="#nombre#" name="nombre">
-                    <label for="">Nombre de red</label>
-                </div>
-                <div class="input-container">
-                    <input type="text" placeholder=" " value="#contra#" name="contra">
-                    <label for="">Contraseña</label>
-                </div>
-                
-                <div class="input-container">
-                    <input type="text" placeholder=" "value="#servidor#" name="servidor">
-                    <label for="">Servidor</label>
-                </div>
-                <div class="input-container">
-                    <input type="text" placeholder=" " value="#api#" name="api">
-                    <label for="">Ruta api</label>
-                </div>
 
-                <div class="container-buttons">
-                    <button class="btn btn-success">Guardar</button>
-                    <button class="btn btn-danger">Cancelar</button>
+        <div class="main">
+            <div class="container-info">
+                <div class="info">
+                    <div id="rssiInfo" class="info-header">#rssi#</div>
+                    <div class="info-main  ">
+                        <div class="info-img wifi-info ">
+                            <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;">
+                                <path
+                                    d="M12 6c3.537 0 6.837 1.353 9.293 3.809l1.414-1.414C19.874 5.561 16.071 4 12 4c-4.071.001-7.874 1.561-10.707 4.395l1.414 1.414C5.163 7.353 8.463 6 12 6zm5.671 8.307c-3.074-3.074-8.268-3.074-11.342 0l1.414 1.414c2.307-2.307 6.207-2.307 8.514 0l1.414-1.414z">
+                                </path>
+                                <path
+                                    d="M20.437 11.293c-4.572-4.574-12.301-4.574-16.873 0l1.414 1.414c3.807-3.807 10.238-3.807 14.045 0l1.414-1.414z">
+                                </path>
+                                <circle cx="12" cy="18" r="2"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="info-footer">
+                        WIFI
+                    </div>
                 </div>
             </div>
-        </form>
+            <form method="post" action="/home">
+                <div class="container-rfid">
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="#nombre#" name="nombre">
+                        <label for="">Nombre de red</label>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="#contra#" name="contra">
+                        <label for="">Contraseña</label>
+                    </div>
 
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="#servidor#" name="servidor">
+                        <label for="">Servidor</label>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="#api#" name="api">
+                        <label for="">Ruta api</label>
+                    </div>
+
+                    <div class="container-buttons">
+                        <button class="btn btn-success">Guardar</button>
+                        <button class="btn btn-danger" type="reset">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
+        const path = "ws:/192.168.0.105/ws";
+        let s;
+        const conectarSocket = () => {
+            s = new WebSocket(path);
+            let interval;
+        
+            function comprobarConexion(){
+                s.send("Hola");
+            }
+            function onOpen(e) {
+
+                console.log(`Conectado con exito ${e}`);
+                console.log(e);
+            }
+            function reconect() {
+                console.log(`Reconectando`)
+            }
+            function onClose(e) {
+                console.log("Socket cerrado");
+                setTimeout(conectarSocket,500);
+            }
+            function onErr(e) {
+                console.log("Error en socket reconectando");
+                s.close();
+            }
+            function onMessage(e) {
+                let json = JSON.parse(e.data);
+                if (json) {
+
+                    if (json.WiFi) {
+                        const { CONECTADO, NOMBRE, RSSI } = json.WiFi;
+
+                        console.log(json.WiFi);
+
+                        if (CONECTADO) {
+                            document.querySelector(".wifi-info").classList.add("wifi-info--active");
+                            document.querySelector("#rssiInfo").innerHTML = RSSI;
+
+                        } else {
+                            document.querySelector("#rssiInfo").innerHTML = "Desconectado";
+                            document.querySelector(".wifi-info").classList.remove("wifi-info--active");
+                        }
+
+
+                    }
+                }
+            }
+            
+            s.onopen = onOpen;
+            s.onclose = onClose;
+            s.onmessage = onMessage;
+            s.onerror = onErr;
+            
+        }
+
+        conectarSocket();
+
         const burger = document.querySelector(".burger");
         const navContainer = document.querySelector(".nav");
 
@@ -91,9 +170,6 @@
             navContainer.classList.toggle("nav--collapse");
 
         });
-      
-
-
     </script>
 </body>
 

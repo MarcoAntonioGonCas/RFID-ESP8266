@@ -81,7 +81,7 @@
 .main{
     width:100%;
     overflow:auto;
-    padding:20px;
+    padding:0px 20px 20px 20px;
 }
 
 /* =================================== */
@@ -240,4 +240,63 @@
     0px 0px 10px red,
     0px 0px 24px rgba(185, 47, 23, 0.815),
     0px 0px 40px rgba(128, 4, 0, 0.349);
+}
+
+
+/* Informacion */
+.container-info{
+    display:flex;
+    justify-content:center;
+    padding:5px;
+    border-bottom: 4px solid rgba(124, 124, 124, 0.205);
+    margin-bottom:10px;
+}
+.info{
+    font-family: monospace;
+    font-size:1.1rem;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.199);
+    min-width: 100px;
+    min-height: 100px;
+    border-radius:4px;
+    display:flex;
+    flex-direction: column;
+}
+.info > div:not(:last-child){
+    border-bottom: 1px solid rgba(43, 19, 35, 0.26);
+}
+.info-header{
+    text-align: center;
+    padding:3px;
+}
+.info-main{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+}
+.info-footer{
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    padding:3px;
+}
+
+.wifi-info{
+    position:relative;
+}
+.wifi-info::before{
+    transition: all .5s;
+    content: " ";
+    position:absolute;
+    top: 2px;
+    right: 0;
+    z-index: 0;
+    width:10px;
+    height:10px;
+    border-radius: 50%;
+    background-color:red;
+}
+.wifi-info--active::before{
+    background-color:rgb(22, 204, 22);
 }

@@ -16,6 +16,6 @@ IPAddress apIp(192, 168, 1, 1);
 // Pines
 uint8_t pinLed = LED_BUILTIN;
 uint8_t pinLedWIFI = D2;
-uint8_t pinRS = D1;
+uint8_t pinRS = D0;
 uint8_t pinCS = D8;
 //=====================================================

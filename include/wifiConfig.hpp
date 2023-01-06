@@ -20,3 +20,7 @@ void iniciarSTAWiFI(){
   Serial.println(WiFi.softAPSSID());
   Serial.println(WiFi.softAPIP());
 }
+
+bool wifiConectado(){
+  return WiFi.localIP().isSet();
+}
