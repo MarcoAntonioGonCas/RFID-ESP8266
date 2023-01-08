@@ -1,7 +1,6 @@
-// const char *ssid = "TP-Link_8BB6";
-// const char *password = "71904382";
-// String ServerIp  = "http://192.168.0.104:44355";
-// String rutaApi = "/api/ident/";
+//============================================================
+//Guarda la confguracion en la memoria del ESP
+//En un archivo JSON para leerlo facilmente
 void guardarConfigjson(){
     String strJson;
     StaticJsonDocument<1000> json;
@@ -16,6 +15,11 @@ void guardarConfigjson(){
     f.print(strJson);
     f.close();
 }
+
+
+//=============================================================
+//Lee la configuracion desde la memoria del ESP
+//Esta es deserealizada para su facil lectura
 void cargarConfi(){
     if(!LittleFS.exists("/config.json")){
         return;

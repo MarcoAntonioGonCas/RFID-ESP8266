@@ -1,14 +1,11 @@
+
+//----------------------------------------
+//Importamos las librerias a utlizar
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
 #include <SPI.h>
 #include <DNSServer.h>
-//-----------------Pantalla oled-----------------------
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#include <Wire.h>
-#include "pantallaOled.hpp"
-
 //---------------------------------------
 #include <LedLib.h>
 #include <MFRC522.h>
@@ -17,6 +14,10 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
+
+//-----------------------------------------------
+//Incluimos los archivos de cabezera que tenemos
+//en la carpeta include
 //---------------------------------------
 #include "config.hpp"
 #include "wifiConfig.hpp"
@@ -25,22 +26,30 @@
 #include "rfidHelp.hpp"
 #include "asyncServer.hpp"
 //------------------------------------
+//Este objeto es en donde indicaremos en que pines esta conectado nuestro
+//Rfid el igual 
 MFRC522 rfid(pinCS, pinRS);
+
+//Creamos dos objetos los cuales nos ayudaran a mostrar el estado del Wi-fi
+//y si se ha leido una tarjeta rfid
 ledLibClass ledRFID;
 ledLibClass ledWIFI;
 
-
+//Objeto en donde indicamos la ruta de nuestro websocket
 AsyncWebSocket asyncSocket("/ws");
+//Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
 AsyncWebServer asyncServer(80);
 DNSServer dnsServer;
 bool mostrarIPSTA = true;
 
-//----------------------------------------
-
-
+//=============================================================
+//Inicia los eventos websockets
 void iniciarSocket(){
   asyncSocket.onEvent(&onWsEvent);
 }
+
+//=============================================================
+//Inicia el servidor web al igual que el DNS
 void iniciarServerYDNS(){
 
   dnsServer.setTTL(300);
@@ -55,6 +64,8 @@ void iniciarServerYDNS(){
 
 }
 
+//=============================================================
+//Indica el estado de la conexion WI-Fi atravez de un led
 void actualizaEstadoWiFi(){
   if(!WiFi.localIP().isSet()){
     ledWIFI.prenderInfinito(1000,500);
@@ -68,10 +79,17 @@ void actualizaEstadoWiFi(){
     }
   }
 }
+
+//=============================================================
+//Inicia los objetos leds con lo pines configurados en config.h
 void iniciarLeds(){
   ledRFID.begin(pinLed, TipoLed::Catodo);
   ledWIFI.begin(pinLedWIFI,TipoLed::Anodo);
 }
+
+//=============================================================
+//Inicia el sistema de archivos en nuestro ESP para leer archivos
+//y escribir en el
 bool iniciarLittleFS(){
   Serial.println();
   Serial.println(F("Lectura de Tarjeta"));
@@ -85,7 +103,9 @@ bool iniciarLittleFS(){
 
   return true;
 }
-
+//=============================================================
+//Metodo auxiliar en donde se iniciaran todos los objetos de la
+//con sus respectivas configuraciones de config.h
 bool iniciaTodo(){
 //-----------LEDS-----------------
   iniciarLeds();
@@ -97,16 +117,14 @@ bool iniciaTodo(){
   conectarWiFi();
   //-----------Servidor-----------------
   iniciarServerYDNS();
-  //-----------Oled----------------
-  if(iniciaDisplay()){
-    Serial.println(F("Display oled iniciado con exito"));
-  }else{
-    Serial.println(F("Fallo al iniciar Display oled"));
-  }
-
 
   return true;
 }
+
+
+//=============================================================
+//Metodo principal en donde inicia nuestra aplicacion
+//Este solo se ejecutar una  vez, al principio
 
 void setup()
 {
@@ -119,9 +137,11 @@ void setup()
   
 }
 
+//=============================================================
+//Metodo loop el cual se ejecutara infinitamente
 void loop()
 {
-  display.clearDisplay();
+
   dnsServer.processNextRequest();
   actualizaEstadoWiFi();
   ledRFID.loop();
@@ -138,9 +158,7 @@ void loop()
     Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
   }
 
-  dibujaEstadoWifi(map(WiFi.RSSI(),-135,0,1,5),WiFi.RSSI());
-  // Serial.printf("RSSI : %d \n",WiFi.RSSI());
-  display.display();
+
   enviarInfoCada(2000,asyncSocket);
   comprobarClientes(1000,asyncSocket);
 }

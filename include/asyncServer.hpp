@@ -1,30 +1,43 @@
-const char *usario = "rfid";
-const char *contra = "1234";
-// const uint8_t fingerprint[20] = { 0xC0,0x3F,0x3A,0x29,0xC1,0xDC,0x8C,0x4B,0x82,0x1D,0xE3,0x55,0xDB,0x43,0xE0,0xFF,0xFD,0x73,0xC3,0xE7 };
+//Cliente htpp para realizar solicituedes http al servidor
 HTTPClient http;
 WiFiClient cli;
+
+//Documento json que contendra informacion para solicitudes htpp
 StaticJsonDocument<48> json;
 String jsonStr;
+
+//Documento json que contendra informacion para ls clientes sockets conectados
 StaticJsonDocument<100> jsonWS;
 String jsonStrWS;
-ulong_t tiempoIni;
-bool ini = false;
-ulong_t tiempoIniClients = 0;
 
+
+//Variables auxiliares para controlar cada cierto tiempo se
+//limpiaran clietes o se enviara informacion a los clientes
+//websockets
+ulong_t tiempoInicialSockets = 0;
+ulong_t tiempoLimpiaClientes = 0;
+
+
+//==============================================================
+//Metodo para liberar clientes websockets conectados  
 static void comprobarClientes(long cada, AsyncWebSocket &socket)
 {
-   if (tiempoIniClients == 0)
+   if (tiempoLimpiaClientes == 0)
    {
-      tiempoIniClients = millis();
+      tiempoLimpiaClientes = millis();
    }
 
-   if (millis() - tiempoIniClients > cada)
+   if (millis() - tiempoLimpiaClientes > cada)
    {
 
       socket.cleanupClients();
-      tiempoIniClients = millis();
+      tiempoLimpiaClientes = millis();
    }
 }
+
+
+//=============================================================
+//Envia informacio sobre Wi-Fi a clientes websockets conectados
 static void enviarInfoWS(AsyncWebSocket &socket)
 {
 
@@ -40,21 +53,26 @@ static void enviarInfoWS(AsyncWebSocket &socket)
    jsonWS.clear();
    jsonStrWS.clear();
 }
+
+
+//=============================================================
+//Envia informacio a clientes websockets cada clerto tiempo
 void enviarInfoCada(long espera, AsyncWebSocket &socket)
 {
-   if (!ini)
-   {
-      ini = true;
-      tiempoIni = millis();
+   if(tiempoInicialSockets == 0){
+      tiempoInicialSockets = millis();
    }
 
-   if (millis() - tiempoIni > espera)
+   if (millis() - tiempoInicialSockets > espera)
    {
       enviarInfoWS(socket);
-      tiempoIni = millis();
+      tiempoInicialSockets = millis();
    }
 }
 
+//=============================================================
+//Realiza una peticion POST a nuestra api
+//Utiliza la ruta de la Api configurada en archivos de configuracion
 void enviarPostApi(String &uuid)
 {
    if (WiFi.status() != WL_CONNECTED)
@@ -65,7 +83,7 @@ void enviarPostApi(String &uuid)
    json["uuid"] = uuid;
    serializeJson(json, jsonStr);
    http.begin(cli, (serverIp + rutaApi));
-   http.addHeader("Authorization", "Bearer api123");
+   http.addHeader("Authorization", strcat("Bearer ",token));
    http.addHeader("Content-Type", "application/json");
    http.addHeader("Connection", "keep-alive");
 
@@ -87,9 +105,16 @@ void enviarPostApi(String &uuid)
    json.clear();
    jsonStr.clear();
 }
+
+//=============================================================
+//Metodo que procesa la informacion que es enviada de un cliente de
+//desde websockets
 void ProcessRequest(AsyncWebSocketClient *client, String mensaje)
 {
 }
+
+//=============================================================
+//metodo que contiene los eventos de los clientes websockets
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
    if (type == WS_EVT_CONNECT)
@@ -173,11 +198,17 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
    }
 }
 
+
+//=============================================================
+//Indica en que parte de la memoria se encuentran los archivos
+//estaticos para el servidor
 void filesStatic(AsyncWebServer &async)
 {
-
    async.serveStatic("/", LittleFS, "/www/");
 }
+//=============================================================
+//Ruta Login de nuestro servidor
+//Metodo de acceso GET
 void handleLoginGet(AsyncWebServerRequest *req)
 {
    if (!LittleFS.exists("/login.html"))
@@ -188,6 +219,9 @@ void handleLoginGet(AsyncWebServerRequest *req)
 
    req->send(LittleFS, "/login.html", "text/html");
 }
+//=============================================================
+//Ruta Login de nuestro servidor
+//Metodo de acceso POST
 void handleLoginPost(AsyncWebServerRequest *req)
 {
 
@@ -208,6 +242,9 @@ void handleLoginPost(AsyncWebServerRequest *req)
       req->redirect("/");
    }
 }
+//=============================================================
+//Ruta principal de nuestro servidor
+//Metodo de acceso GET
 void handlePrincipalGet(AsyncWebServerRequest *req)
 {
    if (!LittleFS.exists("/principal.html"))
@@ -218,10 +255,6 @@ void handlePrincipalGet(AsyncWebServerRequest *req)
 
    File f = LittleFS.open("/principal.html", "r");
    String doc = f.readString();
-   // #nombre#
-   // #contra#
-   // #servidor#
-   // #api#
    doc.replace("#nombre#", ssid);
    doc.replace("#contra#", password);
    doc.replace("#servidor#", serverIp);
@@ -229,6 +262,10 @@ void handlePrincipalGet(AsyncWebServerRequest *req)
 
    req->send(200, "text/html", doc);
 }
+
+//=============================================================
+//Ruta principal de nuestro servidor
+//Metodo de acceso POST
 void handlePrincipalPost(AsyncWebServerRequest *req)
 {
    int numParametros = req->params();
@@ -257,6 +294,9 @@ void handlePrincipalPost(AsyncWebServerRequest *req)
       req->redirect("/home");
    }
 }
+//=============================================================
+//Agrega las rutas a nuestro servidor embebido
+
 void addRouters(AsyncWebServer &asyncServer)
 {
    filesStatic(asyncServer);

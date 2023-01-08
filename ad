@@ -1,0 +1,17 @@
+[33mcommit 424594842a27fd1dfb7c3370ce244c647b84b31f[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Marco Antonio Gonzalez Castelan <marcoantonigoncaas@gmail.com>
+Date:   Fri Jan 6 16:43:28 2023 -0600
+
+    Se agrego pantalla oled
+
+[33mcommit 340f56adb3851a9b065e6c0fcf4b47e4fea2f34e[m
+Author: Marco Antonio Gonzalez Castelan <marcoantonigoncaas@gmail.com>
+Date:   Sat Dec 17 16:57:33 2022 -0600
+
+    Solicitudes http no https
+
+[33mcommit fcfd1cf0b128f2165722215e2d776ce704e7c95f[m
+Author: Marco Antonio Gonzalez Castelan <marcoantonigoncaas@gmail.com>
+Date:   Wed Dec 7 02:22:05 2022 -0600
+
+    RFID mensaje puerto serial

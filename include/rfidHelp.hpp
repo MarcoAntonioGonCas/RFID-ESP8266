@@ -1,3 +1,5 @@
+//=============================================================
+//Indica si se encuentra disponible una tarjeta cerca del sensor
 bool tarjetaDisponible(MFRC522& rfid)
 {
   if (rfid.PICC_IsNewCardPresent())
@@ -10,6 +12,8 @@ bool tarjetaDisponible(MFRC522& rfid)
   return false;
 }
 
+//=============================================================
+//Lee el UUID de la tarjeta que se encuentra en el sensor
 String leerTarjeta(MFRC522& rfid)
 {
   String strId = "";
