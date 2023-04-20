@@ -1,3 +1,169 @@
+main.cpp
+
+//----------------------------------------
+//Importamos las librerias a utlizar
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <LittleFS.h>
+#include <SPI.h>
+#include <DNSServer.h>
+//---------------------------------------
+#include <LedLib.h>
+#include <MFRC522.h>
+#include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
+
+//-----------------------------------------------
+//Incluimos los archivos de cabezera que tenemos
+//en la carpeta include
+//---------------------------------------
+#include "config.hpp"
+#include "wifiConfig.hpp"
+#include "configHelper.hpp"
+//------------------------------------
+#include "rfidHelp.hpp"
+#include "asyncServer.hpp"
+//------------------------------------
+//Este objeto es en donde indicaremos en que pines esta conectado nuestro
+//Rfid el igual 
+MFRC522 rfid(pinCS, pinRS);
+
+//Creamos dos objetos los cuales nos ayudaran a mostrar el estado del Wi-fi
+//y si se ha leido una tarjeta rfid
+ledLibClass ledRFID;
+ledLibClass ledWIFI;
+
+//Objeto en donde indicamos la ruta de nuestro websocket
+AsyncWebSocket asyncSocket("/ws");
+//Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
+AsyncWebServer asyncServer(80);
+DNSServer dnsServer;
+bool mostrarIPSTA = true;
+
+//=============================================================
+//Inicia los eventos websockets
+void iniciarSocket(){
+  asyncSocket.onEvent(&onWsEvent);
+}
+
+//=============================================================
+//Inicia el servidor web al igual que el DNS
+void iniciarServerYDNS(){
+
+  dnsServer.setTTL(300);
+  dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
+  dnsServer.start(DNS_PORT,"www.rfid.com",apIp);
+  //--------------------------------------------
+  addRouters(asyncServer);
+  asyncServer.addHandler(&asyncSocket);
+  iniciarSocket();
+  asyncServer.begin();
+  //----------------------------
+
+}
+
+//=============================================================
+//Indica el estado de la conexion WI-Fi atravez de un led
+void actualizaEstadoWiFi(){
+  if(!WiFi.localIP().isSet()){
+    ledWIFI.prenderInfinito(1000,500);
+    mostrarIPSTA = true;
+  }else{
+    ledWIFI.parar();
+    ledWIFI.prender();
+    if(mostrarIPSTA){
+      Serial.printf("Conectado a WIFI %s con ip: %s",WiFi.SSID().c_str(),WiFi.localIP().toString().c_str());
+      mostrarIPSTA = false;
+    }
+  }
+}
+
+//=============================================================
+//Inicia los objetos leds con lo pines configurados en config.h
+void iniciarLeds(){
+  ledRFID.begin(pinLed, TipoLed::Catodo);
+  ledWIFI.begin(pinLedWIFI,TipoLed::Anodo);
+}
+
+//=============================================================
+//Inicia el sistema de archivos en nuestro ESP para leer archivos
+//y escribir en el
+bool iniciarLittleFS(){
+  Serial.println();
+  Serial.println(F("Lectura de Tarjeta"));
+  
+  
+  Serial.println(F("Montando LittleFS"));
+  if (!LittleFS.begin()) {
+    Serial.println(F("LittleFS Error al montar"));
+    return false;
+  }
+
+  return true;
+}
+//=============================================================
+//Metodo auxiliar en donde se iniciaran todos los objetos de la
+//con sus respectivas configuraciones de config.h
+bool iniciaTodo(){
+//-----------LEDS-----------------
+  iniciarLeds();
+  //----------LITTLEFS------------------
+  iniciarLittleFS();
+  cargarConfi();
+  //-----------WIFI-----------------
+  iniciarSTAWiFI();
+  conectarWiFi();
+  //-----------Servidor-----------------
+  iniciarServerYDNS();
+
+  return true;
+}
+
+
+//=============================================================
+//Metodo principal en donde inicia nuestra aplicacion
+//Este solo se ejecutar una  vez, al principio
+
+void setup()
+{
+  Serial.begin(9600);
+  SPI.begin();
+  rfid.PCD_Init();
+
+
+  iniciaTodo();
+  
+}
+
+//=============================================================
+//Metodo loop el cual se ejecutara infinitamente
+void loop()
+{
+
+  dnsServer.processNextRequest();
+  actualizaEstadoWiFi();
+  ledRFID.loop();
+  ledWIFI.loop();
+  if (tarjetaDisponible(rfid))
+  {
+    ledRFID.prender(100, 50, 4);
+    String strId = leerTarjeta(rfid);
+    enviarPostApi(strId);
+    Serial.println(strId);
+
+    // Serial.printf("Espacio total %d \n",ESP.getFlashChipSize());
+    // Serial.printf("Espacio disponible stack %d \n",ESP.getFreeContStack());
+    // Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
+  }
+
+
+  enviarInfoCada(2000,asyncSocket);
+  comprobarClientes(1000,asyncSocket);
+}
+asyncServer.hpp
 // Cliente htpp para realizar solicituedes http al servidor
 //Correcion de error
 HTTPClient http;
@@ -351,4 +517,157 @@ void addRouters(AsyncWebServer &asyncServer)
    asyncServer.on("/api/redes", HTTP_GET, handleApiGetNetworks);
    asyncServer.onNotFound([](AsyncWebServerRequest *req)
                           { req->send(LittleFS, "/noEncontrado.html", "text/html"); });
+}
+config.hpp
+//=====================================================
+//Archivo de configuraciones
+//=====================================================
+
+//=====================================================
+// WIFI pagina web
+String ssid = "TP-Link_8BB6";
+String password = "71904382";
+String serverIp = "http://192.168.0.104:44355";
+String rutaApi = "/api/ident/";
+bool modoRegistro = false;
+
+
+//=====================================================
+//Punto de acceso
+
+const char* ssidAP = "RFID_AP";
+const char* passwordAP ="RFID2022MA";
+
+//=====================================================
+// DNS
+const byte DNS_PORT = 53;
+//=====================================================
+// Punto de acceso
+IPAddress apIp(192, 168, 1, 1);
+
+//=====================================================
+// Pines
+uint8_t pinLed = LED_BUILTIN;
+uint8_t pinLedWIFI = D2;
+uint8_t pinRS = D0;
+uint8_t pinCS = D8;
+//=====================================================
+//usuerio y contraseña para la login  pagina web embebida
+const char *usario = "rfid";
+const char *contra = "1234";
+
+
+//Token para realizar la peticion http a webserver IIS ASP
+const char* token = "api123";
+configHelper.hpp
+//============================================================
+//Guarda la confguracion en la memoria del ESP
+//En un archivo JSON para leerlo facilmente
+void guardarConfigjson(){
+    String strJson;
+    StaticJsonDocument<1000> json;
+    json["ssid"] =  ssid;
+    json["password"] = password;
+    json["ServerIp"] = serverIp;
+    json["rutaApi"] = rutaApi;
+    json["modoRegistro"] = modoRegistro;
+    serializeJson(json,strJson);
+
+    File f = LittleFS.open("/config.json","w");
+
+    f.print(strJson);
+    f.close();
+}
+
+
+//=============================================================
+//Lee la configuracion desde la memoria del ESP
+//Esta es deserealizada para su facil lectura
+void cargarConfi(){
+    if(!LittleFS.exists("/config.json")){
+        return;
+    }
+    File configFile = LittleFS.open("/config.json","r");
+    StaticJsonDocument<1000> json;
+    deserializeJson(json,configFile);
+    configFile.close();
+
+    ssid = json["ssid"].as<String>();
+    password = json["password"].as<String>();
+    serverIp = json["ServerIp"].as<String>();
+    rutaApi = json["rutaApi"].as<String>();
+    modoRegistro = json["modoRegistro"].as<bool>();
+}
+rfidHelp.hpp
+//=============================================================
+//Indica si se encuentra disponible una tarjeta cerca del sensor
+bool tarjetaDisponible(MFRC522& rfid)
+{
+  if (rfid.PICC_IsNewCardPresent())
+  {
+    if (rfid.PICC_ReadCardSerial())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=============================================================
+//Lee el UUID de la tarjeta que se encuentra en el sensor
+String leerTarjeta(MFRC522& rfid)
+{
+  String strId = "";
+  for (int i = 0; i < rfid.uid.size; i++)
+  {
+    if(i !=0 ){
+      strId += ( rfid.uid.uidByte[i] < 0x10 ? "0" : " " );
+    }else if(i == 0 and rfid.uid.uidByte[i] < 0x10){
+      strId += "0";
+    }
+    strId += String(rfid.uid.uidByte[i], HEX);
+  }
+  rfid.PICC_HaltA();
+  return strId;
+}
+wifiConfig.hpp
+
+//=============================================================
+//Inicia una nueva conexion a una red Wi-Fi
+//Esto con el nombre y contraeña puestos en config.h
+void conectarWiFi(){
+  if(WiFi.status() == wl_status_t::WL_CONNECTED){
+    WiFi.disconnect();
+    WiFi.localIP().clear();
+  }
+  WiFi.begin(ssid,password);
+}
+
+
+
+//=============================================================
+//inicia el puento de acceso del ESP
+//Con el nombre y contraseña puestos en config.h
+void iniciarSTAWiFI(){
+  WiFi.mode(WiFiMode::WIFI_AP_STA);
+  WiFi.softAPConfig(apIp,apIp,IPAddress(255,255,255,0));
+  WiFi.setAutoReconnect(true);
+  //=======================================================
+  Serial.println(F("Iniciado Punto de acceso"));
+  while(!WiFi.softAP(ssidAP,passwordAP)){
+      Serial.print(F("."));
+      delay(100);
+  }
+
+  Serial.println(F("Punto de acceso iniciado"));
+  Serial.println(WiFi.softAPSSID());
+  Serial.println(WiFi.softAPIP());
+}
+
+
+
+//=============================================================
+//Indica si el ESP se encuentra concectado a una red WI-FI
+bool wifiConectado(){
+  return WiFi.localIP().isSet();
 }

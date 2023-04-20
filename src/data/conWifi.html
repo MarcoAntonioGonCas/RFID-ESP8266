@@ -8,24 +8,23 @@
     <link rel="stylesheet" href="www/principal.css">
     <script src="https://kit.fontawesome.com/ca65d7f2ea.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <header class="header">
         <a href="" class="header-text">RFID</a>
     </header>
     <div class="container-menu">
         <nav class="nav nav--collapse">
-            
             <div class="burger">
                 <div class="line-1"></div>
                 <div class="line-2"></div>
                 <div class="line-3"></div>
             </div>
-
             <ul class="nav-items">
-                <li class="nav-item nav-item--active">
+                <li class="nav-item ">
                     <a href="/home" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/home.svg" alt="imagenInicio">
+                            <img src="www/home.svg"  alt="imagenInicio">
                         </div>
                         <span class="nav-item__text">Inicio</span>
                     </a>
@@ -38,7 +37,7 @@
                         <span class="nav-item__text">Configurar</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item nav-item--active">
                     <a href="/confiWifi" class="nav-item__link">
                         <div class="container-img">
                             <img src="www/wifi.svg" alt="imagenConfigurarWifi">
@@ -56,7 +55,6 @@
                 </li>
             </ul>
         </nav>
-
         <main class="main">
             <div class="container-info">
                 <div class="info">
@@ -71,36 +69,97 @@
                     </div>
                 </div>
             </div>
-            <form method="post" action="/home">
+            <form method="post" action="/conWifi">
                 <div class="container-rfid">
+                    <div class="fill">
+                        <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">
+                            <span>Buscar</span>
+                            <img src="www/search.svg" alt="">
+                        </button>
+                    </div>
+                    <!--  -->
+                    <P class="sep">
+                        <span>WIFI</span>
+                    </P>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#nombre#" name="nombre">
+                        <input id="txtNombreRed" type="text" placeholder=" " value="#nombre#" name="nombre">
                         <label for="">Nombre de red</label>
                     </div>
+                    
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#contra#" name="contra">
+                        <input id="txtContraRed" type="text" placeholder=" " value="#contra#" name="contra">
                         <label for="">Contraseña</label>
                     </div>
 
+                    <div>
+                        <div>
+                            <label for="">Habilitar proxy</label>
+                            <input type="checkbox" name="HabiProxy" id="proxy-habilitado">
+                        </div>
+                        <div class="input-container">
+                            <input id="proxy" type="text" placeholder=" " value="#proxy#" name="contra" pattern="$([0-9]{1,3}[.]){3}[0-9]{1,3}">
+                            <label for="">Proxy</label>
+                        </div>
+                        <div class="input-container">
+                            <input id="puerto" maxlength="20" type="number" placeholder=" " value="#puerto#" name="contra">
+                            <label for="">Puerto</label>
+                        </div>
+                    </div>
+                    <!-- Punto de acceso -->
+                    <P class="sep">
+                        <span>Punto de acceso</span>
+                    </P>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#servidor#" name="servidor">
-                        <label for="">Servidor</label>
+                        <input type="text" placeholder=" " value="#nombreAP#" name="servidor">
+                        <label for="">Nombre punto de acceso</label>
                     </div>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#api#" name="api">
-                        <label for="">Ruta api</label>
+                        <input type="text" placeholder=" " value="#contraAP#" name="api">
+                        <label for="">Contraseña punto de acceso</label>
                     </div>
-
+                    <div>
+                        <label for="">
+                            Habilitar punto de acceso
+                            <input type="checkbox" name="APHabilitaso" id="">
+                        </label>
+                    </div>
                     <div class="container-buttons">
                         <button class="btn btn-success">Guardar</button>
                         <button class="btn btn-danger" type="reset">Cancelar</button>
                     </div>
                 </div>
             </form>
+
+            <div class="modal" id="modalWifi">
+                <div class="modal-close" data-close="modal"></div>
+                <div class="container-redes">
+                    <table class="table">
+                        <thead class="table-header">
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Señal</th>
+                            <th>Seguridad</th>
+                            <th>Canal</th>
+                            <th></th>
+                        </thead>
+                        <tbody class="table-body" id="container-redes">
+                            <tr>
+                             
+                            
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-search" id="btnBuscarRedes">
+                        <span>Buscar</span>
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
 
+    
     <script src="www/scriptPrin.js"></script>
+    <script src="www/scriptConWifi.js"></script>
 </body>
-
 </html>

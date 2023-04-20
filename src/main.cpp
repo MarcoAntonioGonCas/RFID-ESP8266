@@ -153,9 +153,9 @@ void loop()
     enviarPostApi(strId);
     Serial.println(strId);
 
-    Serial.printf("Espacio total %d \n",ESP.getFlashChipSize());
-    Serial.printf("Espacio disponible stack %d \n",ESP.getFreeContStack());
-    Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
+    // Serial.printf("Espacio total %d \n",ESP.getFlashChipSize());
+    // Serial.printf("Espacio disponible stack %d \n",ESP.getFreeContStack());
+    // Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
   }
 
 

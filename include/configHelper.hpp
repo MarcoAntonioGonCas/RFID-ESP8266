@@ -8,6 +8,7 @@ void guardarConfigjson(){
     json["password"] = password;
     json["ServerIp"] = serverIp;
     json["rutaApi"] = rutaApi;
+    json["modoRegistro"] = modoRegistro;
     serializeJson(json,strJson);
 
     File f = LittleFS.open("/config.json","w");
@@ -33,4 +34,5 @@ void cargarConfi(){
     password = json["password"].as<String>();
     serverIp = json["ServerIp"].as<String>();
     rutaApi = json["rutaApi"].as<String>();
+    modoRegistro = json["modoRegistro"].as<bool>();
 }
