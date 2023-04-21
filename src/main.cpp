@@ -23,7 +23,11 @@
 #include "wifiConfig.hpp"
 #include "configHelper.hpp"
 //------------------------------------
-#include "rfidHelp.hpp"
+#include "rfidRead.hpp"
+
+#include "configServer.hpp"
+#include "peticionesServidor.hpp"
+#include "asyncSocket.hpp"
 #include "asyncServer.hpp"
 //------------------------------------
 //Este objeto es en donde indicaremos en que pines esta conectado nuestro
@@ -111,9 +115,9 @@ bool iniciaTodo(){
   iniciarLeds();
   //----------LITTLEFS------------------
   iniciarLittleFS();
-  cargarConfi();
+  leerConfig();
   //-----------WIFI-----------------
-  iniciarSTAWiFI();
+  configAPWIFI();
   conectarWiFi();
   //-----------Servidor-----------------
   iniciarServerYDNS();

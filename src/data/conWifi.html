@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="www/login.css">
-    <link rel="stylesheet" href="www/principal.css">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="www/login.css" />
+    <link rel="stylesheet" href="www/principal.css" />
     <script src="https://kit.fontawesome.com/ca65d7f2ea.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
     <header class="header">
         <a href="" class="header-text">RFID</a>
@@ -21,18 +20,18 @@
                 <div class="line-3"></div>
             </div>
             <ul class="nav-items">
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a href="/home" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/home.svg"  alt="imagenInicio">
+                            <img src="www/home.svg" alt="imagenInicio" />
                         </div>
                         <span class="nav-item__text">Inicio</span>
                     </a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a href="confi" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                            <img src="www/configure.svg" alt="imagenConfigurarWifi" />
                         </div>
                         <span class="nav-item__text">Configurar</span>
                     </a>
@@ -40,15 +39,15 @@
                 <li class="nav-item nav-item--active">
                     <a href="/confiWifi" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
+                            <img src="www/wifi.svg" alt="imagenConfigurarWifi" />
                         </div>
                         <span class="nav-item__text">Configurar Wifi</span>
                     </a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a href="/logout" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/log-out.svg" alt="imagenConsalir">
+                            <img src="www/log-out.svg" alt="imagenConsalir" />
                         </div>
                         <span class="nav-item__text">Salir</span>
                     </a>
@@ -58,15 +57,13 @@
         <main class="main">
             <div class="container-info">
                 <div class="info">
-                    <div id="rssiInfo" class="info-header">#rssi#</div>
-                    <div class="info-main ">
-                        <div class="info-img wifi-info ">
-                            <img src="www/wifi.svg" alt="">
+                    <div id="rssiInfo" class="info-header">%rssi%</div>
+                    <div class="info-main">
+                        <div class="info-img wifi-info">
+                            <img src="www/wifi.svg" alt="" />
                         </div>
                     </div>
-                    <div class="info-footer">
-                        WIFI
-                    </div>
+                    <div class="info-footer">WIFI</div>
                 </div>
             </div>
             <form method="post" action="/conWifi">
@@ -74,53 +71,54 @@
                     <div class="fill">
                         <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">
                             <span>Buscar</span>
-                            <img src="www/search.svg" alt="">
+                            <img src="www/search.svg" alt="" />
                         </button>
                     </div>
                     <!--  -->
-                    <P class="sep">
+                    <p class="sep">
                         <span>WIFI</span>
-                    </P>
+                    </p>
                     <div class="input-container">
-                        <input id="txtNombreRed" type="text" placeholder=" " value="#nombre#" name="nombre">
+                        <input id="txtNombreRed" type="text" placeholder=" " value="%nombre%" name="nombre" />
                         <label for="">Nombre de red</label>
                     </div>
-                    
+
                     <div class="input-container">
-                        <input id="txtContraRed" type="text" placeholder=" " value="#contra#" name="contra">
+                        <input id="txtContraRed" type="text" placeholder=" " value="%contra%" name="contra" />
                         <label for="">Contraseña</label>
                     </div>
 
                     <div>
                         <div>
                             <label for="">Habilitar proxy</label>
-                            <input type="checkbox" name="HabiProxy" id="proxy-habilitado">
+                            <input %HabiProxy% type="checkbox" name="HabiProxy" id="proxy-habilitado" />
                         </div>
                         <div class="input-container">
-                            <input id="proxy" type="text" placeholder=" " value="#proxy#" name="contra" pattern="$([0-9]{1,3}[.]){3}[0-9]{1,3}">
+                            <input id="proxy" type="text" placeholder=" " value="%proxy%" name="proxy" />
                             <label for="">Proxy</label>
                         </div>
                         <div class="input-container">
-                            <input id="puerto" maxlength="20" type="number" placeholder=" " value="#puerto#" name="contra">
+                            <input id="puerto" maxlength="20" type="number" placeholder=" " value="%puerto%"
+                                name="puerto" />
                             <label for="">Puerto</label>
                         </div>
                     </div>
                     <!-- Punto de acceso -->
-                    <P class="sep">
+                    <p class="sep">
                         <span>Punto de acceso</span>
-                    </P>
+                    </p>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#nombreAP#" name="servidor">
+                        <input type="text" placeholder=" " value="%nombreAP%" name="servidor" />
                         <label for="">Nombre punto de acceso</label>
                     </div>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="#contraAP#" name="api">
+                        <input type="text" placeholder=" " value="%contraAP%" name="api" />
                         <label for="">Contraseña punto de acceso</label>
                     </div>
                     <div>
                         <label for="">
                             Habilitar punto de acceso
-                            <input type="checkbox" name="APHabilitaso" id="">
+                            <input type="checkbox" name="APHabilitado" id="" %APHabilitado% />
                         </label>
                     </div>
                     <div class="container-buttons">
@@ -143,11 +141,7 @@
                             <th></th>
                         </thead>
                         <tbody class="table-body" id="container-redes">
-                            <tr>
-                             
-                            
-                            </tr>
-                        
+                            <tr></tr>
                         </tbody>
                     </table>
                     <button type="button" class="btn btn-search" id="btnBuscarRedes">
@@ -158,8 +152,8 @@
         </main>
     </div>
 
-    
     <script src="www/scriptPrin.js"></script>
     <script src="www/scriptConWifi.js"></script>
 </body>
+
 </html>

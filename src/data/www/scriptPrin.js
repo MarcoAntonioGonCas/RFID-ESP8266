@@ -40,61 +40,6 @@ const conectarSocket = () => {
         console.log(`Reconectando`)
     }
     function onClose(e) {
-        console.log("Socket cerrado");
-
-        //Ruta en donde esta ubicada nuestro servidor websock;
-        const path = `ws://${window.location.hostname}/ws`;
-
-        let socket;
-        //Metodo que contiene todos las operaciones con los sockets ademas de
-        //abrir la conexion
-        const conectarSocket = () => {
-            socket = new WebSocket(path);
-            let interval;
-
-            function comprobarConexion() {
-                socket.send("Hola");
-            }
-            function onOpen(e) {
-
-                console.log(`Conectado con exito ${e}`);
-                console.log(e);
-            }
-            function reconect() {
-                console.log(`Reconectando`)
-            }
-            function onClose(e) {
-                console.log("Socket cerrado");
-                setTimeout(conectarSocket, 500);
-            }
-            function onErr(e) {
-                console.log("Error en socket reconectando");
-                socket.close();
-            }
-            function onMessage(e) {
-
-            }
-
-            socket.onopen = onOpen;
-            socket.onclose = onClose;
-            socket.onmessage = onMessage;
-            socket.onerror = onErr;
-
-        }
-
-        conectarSocket();
-
-
-        //Parte de codigo que indica si se debe mostrar o cultar el menu
-        //desplegable esto haciendo click en la hamburguesa 
-        const burger = document.querySelector(".burger");
-        const navContainer = document.querySelector(".nav");
-
-        burger.addEventListener('click', () => {
-            burger.classList.toggle("burger--active");
-            navContainer.classList.toggle("nav--collapse");
-
-        });
         setTimeout(conectarSocket, 500);
     }
     function onErr(e) {

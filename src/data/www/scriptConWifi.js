@@ -1,11 +1,11 @@
 
 // const rutaApi = `${url}/api/redes`
-const rutaApi = `http://192.168.0.109/api/redes`
+const rutaApi = `http://192.168.0.104/api/redes`
 const container = document.querySelector("#container-redes")
 const btnSearch = document.querySelector("#btnBuscarRedes");
+const controller = new AbortController();
 let redes = [];
-
-
+let id ;
 btnSearch.addEventListener("click", () =>{
     toogleButtonSearch(true);
     llamaApi()
@@ -83,25 +83,31 @@ const compruebajson = (json)=>{
 
         }
     }else{
-        setTimeout(5000,llamaApi)
+        setTimeout(llamaApi,5000)
     }
 }
 
 const realizaPeticion = (url) => {
     borraNodos(container);
 
-    fetch(rutaApi)
+    fetch(url)
     .then(res => res.json())
     .then(compruebajson)
     .catch(err =>{
-        alert("Error al buscar redes")
+        if(err.name == "AbortError"){
+            alert("Tiempo de espera agotado")
+        }else{
+            alert("Error al buscar redes")
+
+        }
         console.log(err);
         toogleButtonSearch(false)
     })
 }
-
+ 
 function llamaApi (){
     realizaPeticion(rutaApi)
+
 };
 
 // Proxy
