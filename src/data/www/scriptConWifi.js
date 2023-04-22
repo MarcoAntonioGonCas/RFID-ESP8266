@@ -1,6 +1,6 @@
 
-// const rutaApi = `${url}/api/redes`
-const rutaApi = `http://192.168.0.104/api/redes`
+const rutaApi = `${url}/api/redes`
+// const rutaApi = `http://192.168.0.104/api/redes`
 const container = document.querySelector("#container-redes")
 const btnSearch = document.querySelector("#btnBuscarRedes");
 const controller = new AbortController();

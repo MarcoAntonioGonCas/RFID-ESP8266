@@ -57,7 +57,7 @@ const conectarSocket = () => {
 
 }
 
-// conectarSocket();
+conectarSocket();
 
 
 //Parte de codigo que indica si se debe mostrar o cultar el menu

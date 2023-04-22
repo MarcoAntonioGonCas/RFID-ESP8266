@@ -9,7 +9,7 @@ void guardarConfigjson()
     json["ssid"] = ssid;
     json["password"] = password;
     json["proxyHabilitado"] = proxyHabilitado;
-    json["proxy"] = proxy == nullptr ? 0 : proxy->v4();
+    // json["proxy"] = proxy == nullptr ? 0 : proxy->v4();
     json["puerto"] = puerto;
 
     json["ssidAP"] = ssidAP;
@@ -21,9 +21,10 @@ void guardarConfigjson()
     json["modoRegistro"] = modoRegistro;
 
     serializeJson(json, strJson);
-
+    Serial.println(strJson);
+    Serial.println("nknsa");
+    
     File f = LittleFS.open("/config.json", "w");
-
     f.print(strJson);
     f.close();
 }

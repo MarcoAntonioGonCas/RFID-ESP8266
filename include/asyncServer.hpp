@@ -88,7 +88,7 @@ void handlePrincipalPost(AsyncWebServerRequest *req)
       serverIp = pServidor;
       rutaApi = pApi;
 
-      guardarConfigjson();
+      // guardarConfigjson();
       conectarWiFi();
       req->redirect("/home");
    }
@@ -96,6 +96,37 @@ void handlePrincipalPost(AsyncWebServerRequest *req)
    {
       req->redirect("/home");
    }
+   // //nombre
+   // //contra
+   // //servidor
+   // //api
+   // if (
+   //    req->hasParam("nombre",true) and
+   //    req->hasParam("servidor",true) and
+   //    req->hasParam("api",true)
+   // )
+   // {
+   //    String pNombre = req->getParam("nombre",true)->value();
+   //    String pContra = "";
+   //    String pServidor = req->getParam("servidor",true)->value();
+   //    String pApi = req->getParam("api",true)->value();
+
+   //    if(req->hasParam("contra",true)){
+   //       pContra = req->getParam("contra",true)->value();
+   //    }   
+   //    ssid = pNombre;
+   //    password = pContra;
+   //    serverIp = pServidor;
+   //    rutaApi = pApi;
+
+   //    // guardarConfigjson();
+   //    conectarWiFi();
+   //    req->redirect("/home");
+   // }
+   // else
+   // {
+   //    req->redirect("/home");
+   // }
 }
 String processorWifiConfigGet(const String& var)
 {
@@ -148,26 +179,27 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
 {
    int numParametros = req->params();
 
-   //nombreRed
-   //contra
-   //habilitarProxy
-   //proxy
-   //purto
-   //nombreAP
-   //contraAP
-   //puntoAPHabilitado
-
-
    if (numParametros == 8)
    {
+      
       String pNombre = req->getParam(0)->value();
       String pContra = req->getParam(1)->value();
-      String pHabiProxy = req->getParam(3)->value();
-      String pProxy = req->getParam(4)->value();
+      String pHabiProxy = req->getParam(2)->value();
+      String pProxy = req->getParam(3)->value();
+      String pPuerto = req->getParam(4)->value();
+      String pNombreAP = req->getParam(5)->value();
+      String pContraAP = req->getParam(6)->value();
+      String pPuntoAPHabilitado = req->getParam(7)->value();
 
-
-
-
+      Serial.println("Mostrando info");
+      Serial.println(pNombre);
+      Serial.println(pContra);
+      Serial.println(pHabiProxy);
+      Serial.println(pProxy);
+      Serial.println(pPuerto);
+      Serial.println(pNombreAP);
+      Serial.println(pContraAP);
+      Serial.println(pPuntoAPHabilitado);
 
       req->redirect("/confiWifi");
    }
@@ -237,7 +269,7 @@ void addRouters(AsyncWebServer &asyncServer)
    asyncServer.on("/home", HTTP_POST, handlePrincipalPost);
 
    asyncServer.on("/confiWifi",HTTP_GET,handleWifiConfigGet);
-   asyncServer.on("/confiWifi",HTTP_POST,handleWifiConfigPost);
+   asyncServer.on("/conWifi",HTTP_POST,handleWifiConfigPost);
 
    asyncServer.on("/api/redes", HTTP_GET, handleApiGetNetworks);
    asyncServer.onNotFound([](AsyncWebServerRequest *req)

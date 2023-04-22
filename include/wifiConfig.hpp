@@ -1,28 +1,21 @@
 
-
+//=============================================================
+// Indica si el ESP se encuentra concectado a una red WI-FI
+bool wifiConectado()
+{
+  return WiFi.localIP().isSet();
+}
 void toogleAP()
 {
- 
-  WiFi.enableAP(apHabilitado);
   if (!apHabilitado)
     return;
 
   Serial.println(F("Iniciado Punto de acceso"));
-
-  
-
   while (!WiFi.softAP(ssidAP, passwordAP))
   { 
     Serial.print(F("."));
      delay(100);
   }
-  
-  // while (!WiFi.softAP(ssidAP, passwordAP))
-  // {
-  //   Serial.print(F("."));
-  //   delay(100);
-  // }
-
   Serial.println(F("Punto de acceso iniciado"));
   Serial.println(WiFi.softAPSSID());
   Serial.println(WiFi.softAPIP());
@@ -32,13 +25,19 @@ void toogleAP()
 // Esto con el nombre y contraeña puestos en config.h
 void conectarWiFi()
 {
+  if(WiFi.SSID() == ssid and WiFi.psk()==password){
+    return;
+  }
+
   if (WiFi.status() == wl_status_t::WL_CONNECTED)
   {
     WiFi.disconnect();
-    WiFi.localIP().clear();
+    // WiFi.localIP().clear();
   }
-
+  Serial.println(ssid);
+  Serial.println(password);
   WiFi.begin(ssid, password);
+  Serial.println("INtentrando conectar");
 }
 
 //=============================================================
@@ -55,9 +54,3 @@ void configAPWIFI()
   //=======================================================
 }
 
-//=============================================================
-// Indica si el ESP se encuentra concectado a una red WI-FI
-bool wifiConectado()
-{
-  return WiFi.localIP().isSet();
-}

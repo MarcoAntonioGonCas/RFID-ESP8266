@@ -71,6 +71,8 @@ void iniciarServerYDNS(){
 //=============================================================
 //Indica el estado de la conexion WI-Fi atravez de un led
 void actualizaEstadoWiFi(){
+  
+
   if(!WiFi.localIP().isSet()){
     ledWIFI.prenderInfinito(1000,500);
     mostrarIPSTA = true;
