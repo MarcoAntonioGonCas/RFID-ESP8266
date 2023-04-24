@@ -20,6 +20,7 @@
 //en la carpeta include
 //---------------------------------------
 #include "config.hpp"
+#include "funciones.hpp"
 #include "wifiConfig.hpp"
 #include "configHelper.hpp"
 //------------------------------------
@@ -31,7 +32,8 @@
 #include "asyncServer.hpp"
 //------------------------------------
 //Este objeto es en donde indicaremos en que pines esta conectado nuestro
-//Rfid el igual 
+//Rfid el igual
+
 MFRC522 rfid(pinCS, pinRS);
 
 //Creamos dos objetos los cuales nos ayudaran a mostrar el estado del Wi-fi
@@ -71,8 +73,6 @@ void iniciarServerYDNS(){
 //=============================================================
 //Indica el estado de la conexion WI-Fi atravez de un led
 void actualizaEstadoWiFi(){
-  
-
   if(!WiFi.localIP().isSet()){
     ledWIFI.prenderInfinito(1000,500);
     mostrarIPSTA = true;
@@ -134,10 +134,12 @@ bool iniciaTodo(){
 
 void setup()
 {
+  setNameAP();
+
+
   Serial.begin(9600);
   SPI.begin();
   rfid.PCD_Init();
-
 
   iniciaTodo();
   
@@ -147,24 +149,21 @@ void setup()
 //Metodo loop el cual se ejecutara infinitamente
 void loop()
 {
-
   dnsServer.processNextRequest();
   actualizaEstadoWiFi();
   ledRFID.loop();
   ledWIFI.loop();
+
   if (tarjetaDisponible(rfid))
   {
     ledRFID.prender(100, 50, 4);
     String strId = leerTarjeta(rfid);
     enviarPostApi(strId);
     Serial.println(strId);
-
     // Serial.printf("Espacio total %d \n",ESP.getFlashChipSize());
     // Serial.printf("Espacio disponible stack %d \n",ESP.getFreeContStack());
     // Serial.printf("Espacio disponible heap %d \n",ESP.getFreeHeap());
   }
-
-
   enviarInfoCada(2000,asyncSocket);
   comprobarClientes(1000,asyncSocket);
 }

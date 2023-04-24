@@ -9,12 +9,12 @@ void toogleAP()
 {
   if (!apHabilitado)
     return;
-
+  
   Serial.println(F("Iniciado Punto de acceso"));
   while (!WiFi.softAP(ssidAP, passwordAP))
   { 
     Serial.print(F("."));
-     delay(100);
+    delay(100);
   }
   Serial.println(F("Punto de acceso iniciado"));
   Serial.println(WiFi.softAPSSID());
@@ -37,7 +37,7 @@ void conectarWiFi()
   Serial.println(ssid);
   Serial.println(password);
   WiFi.begin(ssid, password);
-  Serial.println("INtentrando conectar");
+  Serial.println("Conectando");
 }
 
 //=============================================================

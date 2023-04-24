@@ -60,3 +60,76 @@ void leerConfig()
 
     if (proxyAux != 0) proxy = new IPAddress(proxyAux);
 }
+void guardarConfigUserJson(){
+    String strJson;
+    StaticJsonDocument<100> json;
+
+    json["usuarioLogin"] = usuarioLogin;
+    json["contraLogin"] = contraLogin;
+    serializeJson(json,strJson);
+
+    File f=LittleFS.open("/loginConfig.json","w");
+    f.print(strJson);
+}
+void guardarConfigUserJson(){
+    if(!LittleFS.exists("/loginConfig.json")){
+        return;
+    }
+    File f =LittleFS.open("/loginConfig.json","r");
+    StaticJsonDocument<100> json;
+    deserializeJson(json,f);
+    usuarioLogin = json["usuarioLogin"].as<String>();
+    contraLogin = json["contraLogin"].as<String>();
+}
+//Helpers
+String readString(File& f){
+    
+    uint8_t* pbuff = new uint8_t[200+1];
+    size_t tama = f.size();
+    String temp = "";
+
+    if(tama==0){
+        return "";
+    }
+    int leidos = 0;
+    do{
+        
+        leidos = f.read(pbuff,200-1);
+        pbuff[leidos] = 0;
+
+        temp += *pbuff;
+
+
+    }while (leidos != 0);
+
+    return temp;
+}
+
+void rellenaString(String& str,uint8_t* buff,int len){
+    for(int i=0;i<len;i++){
+        str+=buff[i];
+    }
+}
+String readStringEvil(File& f){
+    int lec = 200;
+    uint8_t* pbuff = new uint8_t[lec];
+    size_t tama = f.size();
+    String temp = "";
+
+    if(tama==0){
+        return "";
+    }
+    
+    int vueltas = floor(tama/ static_cast<double>(lec));
+    int restante = tama % lec;
+
+    for(int i = 0; i < vueltas; i++){
+        f.read(pbuff,lec);
+        rellenaString(temp,pbuff,lec);
+    }
+    if(restante!=0){
+        f.read(pbuff,lec);
+        rellenaString(temp,pbuff,restante);
+    }
+    return temp;
+}

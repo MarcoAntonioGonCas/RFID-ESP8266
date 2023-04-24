@@ -31,13 +31,13 @@ void handleLoginPost(AsyncWebServerRequest *req)
    {
       String pUsuario = req->getParam(0)->value();
       String pContra = req->getParam(1)->value();
-      if (strcmp(pUsuario.c_str(), usario) == 0 &&
-          strcmp(pContra.c_str(), contra) == 0)
+      if (strcmp(pUsuario.c_str(), usuarioLogin) == 0 &&
+          strcmp(pContra.c_str(), contraLogin) == 0)
       {
          req->redirect("/home");
       }
-      Serial.println((strcmp(pUsuario.c_str(), usario) == 0 &&
-                      strcmp(pContra.c_str(), contra) == 0));
+      Serial.println((strcmp(pUsuario.c_str(), usuarioLogin) == 0 &&
+                      strcmp(pContra.c_str(), contraLogin) == 0));
    }
    else
    {

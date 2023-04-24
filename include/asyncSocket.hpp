@@ -7,7 +7,7 @@ ulong_t tiempoLimpiaClientes = 0;
 
 //==============================================================
 // Metodo para liberar clientes websockets conectados
-static void comprobarClientes(long comprobarCada, AsyncWebSocket &socket)
+static void comprobarClientes(ulong_t comprobarCada, AsyncWebSocket &socket)
 {
    if (tiempoLimpiaClientes == 0)
    {
@@ -43,7 +43,7 @@ void enviarInfoWS(AsyncWebSocket &socket)
 
 //=============================================================
 // Envia informacio a clientes websockets cada clerto tiempo
-void enviarInfoCada(long espera, AsyncWebSocket &socket)
+void enviarInfoCada(ulong_t espera, AsyncWebSocket &socket)
 {
    if (tiempoInicialSockets == 0)
    {
@@ -76,7 +76,8 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
    }
    else if (type == WS_EVT_DISCONNECT)
    {
-      Serial.printf("ws[%s][%u] desconcectadd: %u\n", server->url(), client->id());
+      
+      Serial.printf("ws[%s][%u] desconcectadd: %u \n", server->url(), client->id(), client->id());
    }
    else if (type == WS_EVT_ERROR)
    {

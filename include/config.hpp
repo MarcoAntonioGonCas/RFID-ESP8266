@@ -30,7 +30,9 @@ bool modoRegistro = false;
 //Punto de acceso
 //=====================================================
 String ssidAP = "RFID_AP";
-String passwordAP ="RFID2022MA";
+String passwordAP ="";
+
+
 bool apHabilitado = true;
 
 //=====================================================
@@ -50,9 +52,8 @@ uint8_t pinRS = D0;
 uint8_t pinCS = D8;
 //=====================================================
 //usuerio y contraseña para la login  pagina web embebida
-const char *usario = "rfid";
-const char *contra = "1234";
-
+String usuarioLogin = "admin";
+String contraLogin = "admin";
 
 //Token para realizar la peticion http a webserver IIS ASP
-const char* token = "api123";
+String token = "api123";
