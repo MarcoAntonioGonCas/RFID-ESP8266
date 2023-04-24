@@ -13,12 +13,18 @@
 #include <ESP8266HTTPClient.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-
-
 //-----------------------------------------------
 //Incluimos los archivos de cabezera que tenemos
 //en la carpeta include
 //---------------------------------------
+//Objeto en donde indicamos la ruta de nuestro websocket
+AsyncWebSocket asyncSocket("/ws");
+//Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
+AsyncWebServer asyncServer(80);
+DNSServer dnsServer;
+bool mostrarIPSTA = true;
+bool debugWifi = false;
+
 #include "config.hpp"
 #include "wifiConfig.hpp"
 #include "configHelper.hpp"
@@ -29,6 +35,7 @@
 #include "peticionesServidor.hpp"
 #include "asyncSocket.hpp"
 #include "asyncServer.hpp"
+
 //------------------------------------
 //Este objeto es en donde indicaremos en que pines esta conectado nuestro
 //Rfid el igual 
@@ -39,12 +46,7 @@ MFRC522 rfid(pinCS, pinRS);
 ledLibClass ledRFID;
 ledLibClass ledWIFI;
 
-//Objeto en donde indicamos la ruta de nuestro websocket
-AsyncWebSocket asyncSocket("/ws");
-//Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
-AsyncWebServer asyncServer(80);
-DNSServer dnsServer;
-bool mostrarIPSTA = true;
+
 
 //=============================================================
 //Inicia los eventos websockets
@@ -71,7 +73,15 @@ void iniciarServerYDNS(){
 //=============================================================
 //Indica el estado de la conexion WI-Fi atravez de un led
 void actualizaEstadoWiFi(){
-  
+
+    if(debugWifi){
+      Serial.println("Comprbando si esta conectado al wifi");
+      Serial.println(WiFi.localIP().isSet());
+      Serial.println(WiFi.localIP());
+      Serial.println("Comprobacion exitosa");
+
+       
+    }
 
   if(!WiFi.localIP().isSet()){
     ledWIFI.prenderInfinito(1000,500);
@@ -147,11 +157,15 @@ void setup()
 //Metodo loop el cual se ejecutara infinitamente
 void loop()
 {
-
-  dnsServer.processNextRequest();
+if(debugWifi)Serial.println("Comprobando dns siguiente respuesta");
+    dnsServer.processNextRequest();
+    if(debugWifi)Serial.println("Actaulizar estado wifi");
   actualizaEstadoWiFi();
+  if(debugWifi)Serial.println("CLED RFID");
   ledRFID.loop();
+  if(debugWifi)Serial.println("LED WIFI");
   ledWIFI.loop();
+
   if (tarjetaDisponible(rfid))
   {
     ledRFID.prender(100, 50, 4);
