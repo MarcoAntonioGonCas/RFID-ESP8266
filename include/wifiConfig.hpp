@@ -7,9 +7,11 @@ bool wifiConectado()
 }
 void toogleAP()
 {
-  if (!apHabilitado)
-    return;
-  
+  if (!apHabilitado){
+    WiFi.softAPdisconnect();
+  }
+  //   return;
+
   Serial.println(F("Iniciado Punto de acceso"));
   while (!WiFi.softAP(ssidAP, passwordAP))
   { 
@@ -29,10 +31,16 @@ void conectarWiFi()
     return;
   }
 
-  if (WiFi.status() == wl_status_t::WL_CONNECTED)
+  if (wifiConectado())
   {
-    WiFi.disconnect();
+    Serial.println("Desconectar wifi");
+    // ESP.eraseConfig();
+    // asyncSocket.closeAll();
+    // asyncSocket.cleanupClients();
+    // WiFi.disconnect(false,true);
     // WiFi.localIP().clear();
+    // delay(200);
+    //TODO: Agregar metodo de reincio
   }
   Serial.println(ssid);
   Serial.println(password);
@@ -45,12 +53,13 @@ void conectarWiFi()
 // Con el nombre y contraseña puestos en config.h
 void configAPWIFI()
 {
+WiFi.persistent(false);
 
   WiFi.mode(WiFiMode::WIFI_AP_STA);
   WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
   WiFi.setAutoReconnect(true);
-
   toogleAP();
+
   //=======================================================
 }
 

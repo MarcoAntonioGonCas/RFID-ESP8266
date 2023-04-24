@@ -89,6 +89,7 @@ void handlePrincipalPost(AsyncWebServerRequest *req)
       rutaApi = pApi;
 
       // guardarConfigjson();
+      debugWifi = true;
       conectarWiFi();
       req->redirect("/home");
    }
