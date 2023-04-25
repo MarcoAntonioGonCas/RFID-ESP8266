@@ -1,7 +1,7 @@
 //============================================================
 // Guarda la confguracion en la memoria del ESP
 // En un archivo JSON para leerlo facilmente
-void guardarConfigjson()
+void guardarConfigWifijson()
 {
     String strJson;
     StaticJsonDocument<1000> json;
@@ -32,7 +32,7 @@ void guardarConfigjson()
 //=============================================================
 // Lee la configuracion desde la memoria del ESP
 // Esta es deserealizada para su facil lectura
-void leerConfig()
+void leerConfigWifiJson()
 {
     if (!LittleFS.exists("/config.json"))
     {
@@ -71,17 +71,29 @@ void guardarConfigUserJson(){
     File f=LittleFS.open("/loginConfig.json","w");
     f.print(strJson);
 }
-void guardarConfigUserJson(){
+void leerConfigUserJson(){
     if(!LittleFS.exists("/loginConfig.json")){
         return;
     }
-    File f =LittleFS.open("/loginConfig.json","r");
     StaticJsonDocument<100> json;
+    File f=LittleFS.open("/loginConfig.json","r");
     deserializeJson(json,f);
+
     usuarioLogin = json["usuarioLogin"].as<String>();
     contraLogin = json["contraLogin"].as<String>();
 }
-//Helpers
+
+
+void leerConfig(){
+    leerConfigUserJson();
+    leerConfigWifiJson();
+}   
+void guardarConfigjson(){
+    guardarConfigUserJson();
+    guardarConfigWifijson();
+}
+
+//TODO: Codigo que no se usa
 String readString(File& f){
     
     uint8_t* pbuff = new uint8_t[200+1];
@@ -133,3 +145,4 @@ String readStringEvil(File& f){
     }
     return temp;
 }
+//---termina codigo que no se usa

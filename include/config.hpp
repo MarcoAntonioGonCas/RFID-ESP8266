@@ -1,7 +1,7 @@
 //=====================================================
 //Archivo de configuraciones
 //=====================================================
-// Cliente htpp para realizar solicituedes http al servidor
+//Cliente htpp para realizar solicituedes http al servidor
 //Correcion de error
 HTTPClient http;
 WiFiClient cli;
@@ -31,14 +31,13 @@ bool modoRegistro = false;
 //=====================================================
 String ssidAP = "RFID_AP";
 String passwordAP ="";
-
-
 bool apHabilitado = true;
 
 //=====================================================
 // DNS
 //=====================================================
 const byte DNS_PORT = 53;
+
 //=====================================================
 // Punto de acceso
 //=====================================================
@@ -50,6 +49,7 @@ uint8_t pinLed = LED_BUILTIN;
 uint8_t pinLedWIFI = D2;
 uint8_t pinRS = D0;
 uint8_t pinCS = D8;
+
 //=====================================================
 //usuerio y contraseña para la login  pagina web embebida
 String usuarioLogin = "admin";

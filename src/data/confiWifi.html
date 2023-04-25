@@ -14,40 +14,59 @@
     </header>
     <div class="container-menu">
         <nav class="nav nav--collapse">
+            
             <div class="burger">
                 <div class="line-1"></div>
                 <div class="line-2"></div>
                 <div class="line-3"></div>
             </div>
+
             <ul class="nav-items">
-                <li class="nav-item">
+                <li class="nav-item ">
                     <a href="/home" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/home.svg" alt="imagenInicio" />
+                            <img src="www/home.svg" alt="imagenInicio">
                         </div>
                         <span class="nav-item__text">Inicio</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="confi" class="nav-item__link">
+                <li class="nav-item ">
+                    <a href="/confi" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi" />
+                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
                         </div>
                         <span class="nav-item__text">Configurar</span>
                     </a>
                 </li>
+
+                
                 <li class="nav-item nav-item--active">
                     <a href="/confiWifi" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/wifi.svg" alt="imagenConfigurarWifi" />
+                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
                         </div>
                         <span class="nav-item__text">Configurar Wifi</span>
                     </a>
                 </li>
-                <li class="nav-item">
+
+                <li class="nav-item nav-dropdown ">
+                    <a  class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                        </div>
+                        <span class="nav-item__text">Administrar</span>
+                        <div class="row"></div>
+                    </a>
+                    <ul class="dropdown">
+                        <li class="dropdown__item  ">
+                            <a href="/confiUser" class="dropdown__link">Configurar wifi</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item ">
                     <a href="/logout" class="nav-item__link">
                         <div class="container-img">
-                            <img src="www/log-out.svg" alt="imagenConsalir" />
+                            <img src="www/log-out.svg" alt="imagenConsalir">
                         </div>
                         <span class="nav-item__text">Salir</span>
                     </a>
@@ -66,7 +85,7 @@
                     <div class="info-footer">WIFI</div>
                 </div>
             </div>
-            <form method="post" action="/conWifi">
+            <form method="post" action="/confiWifi">
                 <div class="container-rfid">
                     <div class="fill">
                         <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">

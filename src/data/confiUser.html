@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="www/login.css">
+    <link rel="stylesheet" href="www/principal.css">
+    <script src="https://kit.fontawesome.com/ca65d7f2ea.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header class="header">
+        <a href="" class="header-text">RFID</a>
+    </header>
+    <div class="container-menu">
+        <nav class="nav nav--collapse">
+            
+            <div class="burger">
+                <div class="line-1"></div>
+                <div class="line-2"></div>
+                <div class="line-3"></div>
+            </div>
+
+            <ul class="nav-items">
+                <li class="nav-item ">
+                    <a href="/home" class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/home.svg" alt="imagenInicio">
+                        </div>
+                        <span class="nav-item__text">Inicio</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a href="/confi" class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                        </div>
+                        <span class="nav-item__text">Configurar</span>
+                    </a>
+                </li>
+
+                
+                <li class="nav-item">
+                    <a href="/confiWifi" class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
+                        </div>
+                        <span class="nav-item__text">Configurar Wifi</span>
+                    </a>
+                </li>
+
+                <li class="nav-item nav-dropdown nav-item--active">
+                    <a  class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                        </div>
+                        <span class="nav-item__text">Administrar</span>
+                        <div class="row"></div>
+                    </a>
+                    <ul class="dropdown">
+                        <li class="dropdown__item dropdown__item--active ">
+                            <a href="/confiUser" class="dropdown__link">Configurar wifi</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item ">
+                    <a href="/logout" class="nav-item__link">
+                        <div class="container-img">
+                            <img src="www/log-out.svg" alt="imagenConsalir">
+                        </div>
+                        <span class="nav-item__text">Salir</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <main class="main">
+            <div class="container-info">
+                <div class="info">
+                    <div id="rssiInfo" class="info-header">%rssi%</div>
+                    <div class="info-main">
+                        <div class="info-img wifi-info">
+                            <img src="www/wifi.svg" alt="" />
+                        </div>
+                    </div>
+                    <div class="info-footer">WIFI</div>
+                </div>
+            </div>
+
+            <form method="post" action="/confiUser">
+                <div class="container-rfid">
+                    <div class="sep">
+                        <span>Configuracion de incio de sesion</span>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="%usuario%" name="usuario">
+                        <label for="">Nombre de usuario</label>
+                    </div>
+                    <div class="input-container input-password">
+                        <div class="input-password__img" data-toogle="#contra">
+                            <img src="www/contra.svg" alt="" >
+
+                        </div>
+                        <input id="contra" type="password" placeholder=" " value="%contra%" name="contra">
+                        <label for="">Contraseña</label>
+                    </div>
+                    <div class="container-buttons">
+                        <button class="btn btn-success">Guardar</button>
+                        <button class="btn btn-danger" type="reset">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="www/scriptPrin.js"></script>
+</body>
+
+</html>

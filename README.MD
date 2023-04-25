@@ -1,12 +1,12 @@
-##El proyecto anterior tiene de estrucuta lo siguiente
+# El proyecto anterior tiene de estrucuta lo siguiente
 
-Archivos de cabezera del proyecto
+- Archivos de cabezera del proyecto
 include
 
-Librerias locales del proyecto
+- Librerias locales del proyecto
 lib
 
-Codigo principal del proyecto
+- Codigo principal del proyecto
 src
 
 
