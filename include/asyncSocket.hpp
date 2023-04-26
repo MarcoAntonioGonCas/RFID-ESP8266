@@ -7,7 +7,7 @@ ulong_t tiempoLimpiaClientes = 0;
 
 //==============================================================
 // Metodo para liberar clientes websockets conectados
-static void comprobarClientes(ulong_t comprobarCada, AsyncWebSocket &socket)
+static void comprobarClientesWs(ulong_t comprobarCada, AsyncWebSocket &socket)
 {
    if (tiempoLimpiaClientes == 0)
    {
@@ -24,7 +24,7 @@ static void comprobarClientes(ulong_t comprobarCada, AsyncWebSocket &socket)
 
 //=============================================================
 // Envia informacio sobre Wi-Fi a clientes websockets conectados
-void enviarInfoWS(AsyncWebSocket &socket)
+void enviarInfoWs(AsyncWebSocket &socket)
 {
 
    if (socket.count() == 0)
@@ -43,7 +43,7 @@ void enviarInfoWS(AsyncWebSocket &socket)
 
 //=============================================================
 // Envia informacio a clientes websockets cada clerto tiempo
-void enviarInfoCada(ulong_t espera, AsyncWebSocket &socket)
+void enviarInfoWs(ulong_t espera, AsyncWebSocket &socket)
 {
    if (tiempoInicialSockets == 0)
    {
@@ -52,7 +52,7 @@ void enviarInfoCada(ulong_t espera, AsyncWebSocket &socket)
 
    if (millis() - tiempoInicialSockets > espera)
    {
-      enviarInfoWS(socket);
+      enviarInfoWs(socket);
       tiempoInicialSockets = millis();
    }
 }
@@ -62,6 +62,8 @@ void enviarInfoCada(ulong_t espera, AsyncWebSocket &socket)
 // desde websockets
 void ProcessRequest(AsyncWebSocketClient *client, String mensaje)
 {
+
+   
 }
 
 //=============================================================

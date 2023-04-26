@@ -1,0 +1,11 @@
+#include "config.hpp"
+#include "pines.hpp"
+#include "funciones.hpp"
+#include "wifiConfig.hpp"
+#include "configSave.hpp"
+//------------------------------------
+#include "peticionesServidor.hpp"
+#include "asyncSocket.hpp"
+#include "asyncServer.hpp"
+#include "rfidRead.hpp"
+#include "buttons.hpp"

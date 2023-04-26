@@ -83,7 +83,20 @@ void leerConfigUserJson(){
     contraLogin = json["contraLogin"].as<String>();
 }
 
+void resetConfig(){
+    if(LittleFS.exists("/loginConfig.json")){
+        LittleFS.remove("/loginConfig.json");
+    }
+    
+    if (LittleFS.exists("/config.json"))
+    {
+        LittleFS.remove("/config.json");
+    }
 
+    WiFi.disconnect(true);
+    delay(100);
+    ESP.restart();
+}
 void leerConfig(){
     leerConfigUserJson();
     leerConfigWifiJson();

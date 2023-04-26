@@ -10,6 +10,8 @@ void toogleAP()
 {
   if (!apHabilitado){
     WiFi.softAPdisconnect();
+    Serial.println("Punto de acceso apagado");
+    return;
   }
   Serial.println(F("Iniciado Punto de acceso"));
   while (!WiFi.softAP(ssidAP, passwordAP))
@@ -42,14 +44,13 @@ void conectarWiFi()
     // WiFi.softAPdisconnect(true);
     WiFi.disconnect(true);
     Serial.println("Desconectando la conexion actual wifi");
-    //TODO: Agregar metodo de reincio
     delay(100);
     restartESP();
   }
   Serial.println(ssid);
   Serial.println(password);
   WiFi.begin(ssid, password);
-  Serial.println("Conectando");
+  Serial.println("Conectando....");
 }
 
 //=============================================================
@@ -64,3 +65,29 @@ void configAPWIFI()
   //=======================================================
 }
 
+
+
+void loopAP(){
+  
+}
+
+//=============================================================
+// Indica el estado de la conexion WI-Fi atravez de un led
+void loopWiFi()
+{
+  if (!wifiConectado())
+  {
+    ledWIFI.prenderInfinito(1000, 500);
+    mostrarIPSTA = true;
+  }
+  else
+  {
+    ledWIFI.parar();
+    ledWIFI.prender();
+    if (mostrarIPSTA)
+    {
+      Serial.printf("Conectado a WIFI %s con ip: %s", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+      mostrarIPSTA = false;
+    }
+  }
+}

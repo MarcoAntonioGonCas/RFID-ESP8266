@@ -1,3 +1,6 @@
+MFRC522 rfid(pinCSRfid, pinRSRfid);
+
+
 //=============================================================
 //Indica si se encuentra disponible una tarjeta cerca del sensor
 bool tarjetaDisponible(MFRC522& rfid)
@@ -28,4 +31,17 @@ String leerTarjeta(MFRC522& rfid)
   }
   rfid.PICC_HaltA();
   return strId;
+}
+
+//=============================================================
+//Loop que se ejecutara en la funcion principal
+void loopRfid(){
+  
+  if (tarjetaDisponible(rfid))
+  {
+    ledRFID.prender(100, 50, 4);
+    String strId = leerTarjeta(rfid);
+    enviarPostApi(strId);
+    Serial.println(strId);
+  }
 }

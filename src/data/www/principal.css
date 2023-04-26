@@ -12,6 +12,11 @@
   --color-sepador:#615a5a36;
 
   --color-succes:#28a745;
+
+  --color-primary:#428bca;
+  --color-success:#5cb85c;
+  --color-danger:#d9534f;
+  --color-info:#5bc0de;
 }
 .fill{
   width: 100%;
@@ -625,4 +630,79 @@ body.overflow-hidden{
   font-family: monospace;
   font-weight: bold;
   
+}
+
+/* Ani checkbox */
+
+
+
+
+
+.anim-checkbox{
+  
+}
+
+.anim-checkbox input {
+  display: none;
+  font-weight: normal;
+}
+.anim-checkbox label{
+  position: relative;
+  vertical-align: middle;
+  padding-left: 24px;
+  font-size: 18px;
+  height: 100%;
+  cursor: pointer;
+}
+.anim-checkbox label::after,
+.anim-checkbox label::before{
+  cursor: pointer;
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 0;
+  
+}
+  
+.anim-checkbox label::after{
+  top: 0;
+  border-radius: 3px;
+  border: 2px solid #444444;
+}
+
+.anim-checkbox input:checked + label::after{
+  animation-direction: reverse;
+}
+.anim-checkbox input:checked + label::after{
+  animation: showChecked .2s 1 linear;
+}
+.anim-checkbox input + label::before{
+  z-index: 10;
+  width: 18px;
+  height: 10px;
+  left: 3px;
+  border-left: 3px solid black;
+  border-bottom: 3px solid black;
+  opacity: 0;
+  border-color: var(--color-success);
+  transition: all .2s;
+  transform:   rotate(-45deg);
+}
+.anim-checkbox input:checked + label::before{
+  opacity: 1;
+  
+  
+}
+@keyframes showChecked{
+  0%{
+      transform: scale(1);
+  }
+  50%{
+      transform: scale(.6);
+      border-radius: 0;
+  }
+  100%{
+    transform: scale(1);
+  }
 }
