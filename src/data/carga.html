@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="www/principal.css">
+    
+</head>
+<body class="body-center">
+    
+    <div class="container-save-config">
+        <p>Guardando configuracion y reiniciando...</p>
+
+        <div class="loader"></div>
+
+        <div class="progress">
+            <div class="progress-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const progress = document.querySelector(".progress-bar")
+        const map = (value,valueMin,valueMax,valueNowMin,valueNowMax)=>{
+            return (value - valueMin) * (valueNowMax - valueNowMin) / (valueMax - valueMin) + valueNowMin;
+        }
+
+
+        const cambiarValor = () => {
+            const {ariaValueMax,ariaValueMin,ariaValueNow} = progress;
+            
+            let porcentaje = map(
+                Number(ariaValueNow),
+                Number(ariaValueMin),
+                Number(ariaValueMax),
+                0,
+                100);
+                
+                progress.style.width = `${porcentaje}%`
+        }
+        
+        let link ="%link%";
+        let tiempoReinicio = "%time%";
+        // let link = "hopla";
+        // let tiempoReinicio = 5000;
+        let tiempoAux = 0;
+        let idInterval;
+
+        const restarTime = () => {
+            if(tiempoAux >= tiempoReinicio){
+                // window.open(link,"_blank")
+                window.location = link;
+                clearInterval(idInterval);
+            }
+            progress.ariaValueMax = tiempoReinicio;
+            progress.ariaValueMin = 0;
+            progress.ariaValueNow = tiempoAux;
+            cambiarValor();
+            tiempoAux+=100;
+        }
+
+        idInterval = setInterval(restarTime,100);
+
+
+        window.onload = function(){
+            cambiarValor();
+        }
+
+    </script>
+</body>
+</html>

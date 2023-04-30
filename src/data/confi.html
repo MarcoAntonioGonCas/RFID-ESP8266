@@ -59,7 +59,7 @@
                     </a>
                     <ul class="dropdown">
                         <li class="dropdown__item  ">
-                            <a href="/confiUser" class="dropdown__link">Configurar wifi</a>
+                            <a href="/confiUser" class="dropdown__link">Usuario</a>
                         </li>
                     </ul>
                 </li>
@@ -90,14 +90,6 @@
             </div>
             <form method="post" action="/confi">
                 <div class="container-rfid">
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%nombre%" name="nombre">
-                        <label for="">Nombre de red</label>
-                    </div>
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%contra%" name="contra">
-                        <label for="">Contraseña</label>
-                    </div>
 
                     <div class="input-container">
                         <input type="text" placeholder=" " value="%servidor%" name="servidor">
@@ -107,7 +99,15 @@
                         <input type="text" placeholder=" " value="%api%" name="api">
                         <label for="">Ruta api</label>
                     </div>
-                    <div class="anim-checkbox" >
+                    <div class="inline">
+                        <div class="caption">Baerer</div>
+                        <div class="input-container">
+    
+                            <input type="text" placeholder=" " value="%autorizacion%" name="autorizacion">
+                            <label for="">Autorizacion de api</label>
+                        </div>
+                    </div>
+                        <div class="anim-checkbox anim-checkbox--primary" >
                         <input id="ch" type="checkbox" name="registro" %registro%>
                         <label for="ch">Modo registro</label>
                     </div>

@@ -150,3 +150,26 @@ body {
     filter: brightness(90%);
     border-radius: 0px;
 }
+/* Inline */
+.inline{
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.caption{
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  padding: 3px;
+  flex-basis: auto;
+  box-shadow: 0px 0px 4px rgb(53, 52, 52);
+  color: hsl(0, 0%, 87%);
+  font-size: 16px;
+  font-family: monospace;
+  font-weight: normal;
+  /* height: 100%; */
+  background: rgba(31, 29, 29, 0.973);
+}

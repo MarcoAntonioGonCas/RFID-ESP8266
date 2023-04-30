@@ -147,3 +147,48 @@ containerPassword.forEach((container) => {
     }
   });
 });
+
+
+
+const sendData = (selectorFrm) =>{
+  const frm = document.querySelector(selectorFrm);
+  if(!frm)return;
+  const {action,method} = frm;
+
+  frm.addEventListener("submit",e=>{
+    e.preventDefault();
+    const url = new URL(action);
+    url.host = "192.168.0.106";
+    url.port=""
+    
+    const frmData = new FormData(frm);
+    const dataParams = new URLSearchParams(new FormData(frm));
+    console.log(dataParams.toString());
+
+
+    const jsonData = {};
+
+    for (var [k, v] of frmData) {
+      jsonData[k] = v;
+    }
+    
+    fetch(
+      url,{
+      method,
+      headers: {
+        //'Content-Type': 'application/json'
+         'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body:dataParams
+    }).then(e=>{
+      console.log(e);
+    }).catch(err=>{
+      location.reload();
+    })
+  })
+
+
+
+}
+
+// sendData("#frm");

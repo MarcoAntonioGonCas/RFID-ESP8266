@@ -14,7 +14,7 @@ String ssid = "TP-Link_8BB6";
 String password = "71904382";
 
 bool proxyHabilitado = false;
-IPAddress* proxy;
+IPAddress proxy;
 int puerto = 0;
 
 

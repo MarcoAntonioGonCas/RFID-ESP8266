@@ -26,7 +26,8 @@ void enviarPostApi(String &uuid)
    http.addHeader("Authorization", "Bearer " + String(token));
    http.addHeader("Content-Type", "application/json");
    http.addHeader("Connection", "keep-alive");
-
+   
+   
    int code = http.POST(jsonStr.c_str());
 
    if (code == 200)

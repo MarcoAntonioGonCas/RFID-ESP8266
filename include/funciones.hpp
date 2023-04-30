@@ -1,4 +1,24 @@
 //Funciones de ESP
+bool restart = false;
+
+static long timeRestartIint = 0;
+
+void loopRestart(){
+    if(restart){
+        if(timeRestartIint == 0) timeRestartIint = millis();
+
+        if(millis() - timeRestartIint > 1000){
+
+            asyncServer.end();
+        
+            WiFi.stopSmartConfig();
+            WiFi.disconnect(true);
+            // WiFi.softAPdisconnect(true);
+            delay(200);
+            ESP.restart();
+        }
+    }
+}
 void restartESP(){
     ESP.restart();
 }
@@ -24,7 +44,7 @@ IPAddress toIP(String& str){
 
     int parte = 0;
     for(uint i=0; i < str.length(); i++){
-        if(str[i]-'0' >= 0 and str[i]-'0'<=9){
+        if(str[i]- '0' >= 0 and str[i]-'0'<=9){
 
             partes[parte] *= 10;
             partes[parte] += str[i]-'0';
@@ -40,5 +60,66 @@ IPAddress toIP(String& str){
         return IPAddress(partes[0],partes[1],partes[2],partes[3]);
     }else{
         return IPAddress();
+    }
+}
+
+bool isNum(String& str){
+    if(str.length()==0){
+        return false;
+    }
+    str.trim();
+
+    if(str.compareTo("+.") == 0 or str.compareTo(".+") == 0){
+        return false;
+    }
+    if ( str.length() == 1 and 
+            (
+                str[0] == '.' or
+                str[0] == '+' or
+                str[0] == '-' 
+            )
+        )
+    {
+        return false;
+    }
+    
+
+    bool isNum = true;
+    bool punto = false;
+
+    for(size_t i = 0 ; i < str.length(); i++ ){
+
+        if(i == 0 and (str[i] == '-' or str[i] == '+')){
+            continue;
+        }else if(str[i] == '.' and punto == false){
+            punto = true;
+            continue;
+        }else if(!isdigit(str[i])){
+            isNum = false;
+            break;
+        }
+
+    }
+
+    return isNum;
+}
+
+char* encryptionTypeToString(uint8_t enc){
+    switch(enc) {
+      case ENC_TYPE_NONE:
+        return "Abierta";
+        break;
+      case ENC_TYPE_WEP:
+        return "WEP";
+        break;
+      case ENC_TYPE_TKIP:
+      case ENC_TYPE_CCMP:
+        return "WPA";
+        break;
+      case ENC_TYPE_AUTO:
+        return "Automático";
+        break;
+      default:
+        return "Desconocido";
     }
 }

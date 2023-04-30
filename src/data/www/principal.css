@@ -639,14 +639,26 @@ body.overflow-hidden{
 
 
 .anim-checkbox{
-  
+  --color:#000000;
 }
-
+.anim-checkbox--primary{
+  --color:var(--color-primary)
+}
+.anim-checkbox--success{
+  --color:var(--color-success)
+}
+.anim-checkbox--info{
+  --color:var(--color-info)
+}
+.anim-checkbox--danger{
+  --color:var(--color-danger)
+}
 .anim-checkbox input {
   display: none;
   font-weight: normal;
 }
 .anim-checkbox label{
+  user-select: none;
   position: relative;
   vertical-align: middle;
   padding-left: 24px;
@@ -685,7 +697,7 @@ body.overflow-hidden{
   border-left: 3px solid black;
   border-bottom: 3px solid black;
   opacity: 0;
-  border-color: var(--color-success);
+  border-color: var(--color);
   transition: all .2s;
   transform:   rotate(-45deg);
 }
@@ -704,5 +716,81 @@ body.overflow-hidden{
   }
   100%{
     transform: scale(1);
+  }
+}
+
+/* ------------------------------------------------ */
+/* Loader */
+.body-center{
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items:center ;
+}
+.container-save-config{
+  padding: 20px;
+  /* box-shadow: 0px 0px 12px 0px #00000047; */
+  box-shadow: 0 0 0 1px #F8F8F8 inset, 0 0 0 1px #CCCCCC;
+  
+  border-radius: 4px;
+}
+.container-save-config p{
+  font-family: sans-serif;
+  margin: 0;
+  margin-bottom: 20px;
+}
+.loader{
+  margin: auto;
+  margin-bottom: 20px;
+  --tama:20px;
+  width: var(--tama);
+  height: var(--tama);
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-info);
+  border-left-color: var(--color-info);
+
+  animation: rotate .3s infinite linear;
+}
+
+@keyframes rotate{
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+/* Progresss */
+
+.progress{
+  width: 100%;
+  height: 20px;
+  border-radius: 2px;
+  border: 1px solid #3a3a3a2a;
+  background-color: #f5f5f5;
+}
+
+.progress-bar{
+  height: 100%;
+  width: 0%;
+  background-color: var(--color-primary);
+  background-image: linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  /* background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent); */
+  background-size: 40px 40px;
+  transition: width .2s ease-in-out;
+
+  animation: progress-bar-move .6s infinite linear;
+}
+
+
+@keyframes progress-bar-move{
+  from{
+    background-position:40px;
+  }
+  to{
+    background-position:0px;
   }
 }

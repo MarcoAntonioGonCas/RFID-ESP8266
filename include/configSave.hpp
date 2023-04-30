@@ -9,7 +9,7 @@ void guardarConfigWifijson()
     json["ssid"] = ssid;
     json["password"] = password;
     json["proxyHabilitado"] = proxyHabilitado;
-    // json["proxy"] = proxy == nullptr ? 0 : proxy->v4();
+    json["proxy"] = proxy.v4();
     json["puerto"] = puerto;
 
     json["ssidAP"] = ssidAP;
@@ -19,10 +19,12 @@ void guardarConfigWifijson()
     json["serverIp"] = serverIp;
     json["rutaApi"] = rutaApi;
     json["modoRegistro"] = modoRegistro;
+    json["autorizacion"] = token;
+
 
     serializeJson(json, strJson);
+    Serial.println("Guardando json:::::");
     Serial.println(strJson);
-    Serial.println("nknsa");
     
     File f = LittleFS.open("/config.json", "w");
     f.print(strJson);
@@ -56,9 +58,17 @@ void leerConfigWifiJson()
     serverIp = json["serverIp"].as<String>();
     rutaApi = json["rutaApi"].as<String>();
     modoRegistro = json["modoRegistro"].as<bool>();
+    token = json["autorizacion"].as<String>();
 
 
-    if (proxyAux != 0) proxy = new IPAddress(proxyAux);
+    Serial.println("Leyendo json:::::");
+    serializeJson(json,Serial);
+    Serial.println();
+    Serial.println(ssidAP);
+    Serial.println(passwordAP);
+    
+
+    if (proxyAux != 0) proxy = IPAddress(proxyAux);
 }
 void guardarConfigUserJson(){
     String strJson;

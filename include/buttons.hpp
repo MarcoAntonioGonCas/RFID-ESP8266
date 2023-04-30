@@ -7,7 +7,7 @@ static void onAPToogle(){
     apHabilitado = !apHabilitado;
     ledRFID.prender(100,100,2);
     guardarConfigWifijson();
-    toogleAP();
+    conectarAP();
 }
 static void onResetConfi(){
     delay(400);
@@ -35,10 +35,10 @@ void loopButtonAPReset(){
         tiempoPresionado = millis() - tiempoInicialPresionado;
 
         if(tiempoPresionado >= tiempoEspera ){
-            
+            Serial.println("Restablecionendo configuraciones...");
             onResetConfi();
         }else if(tiempoPresionado >= 300){
-            
+            Serial.println(apHabilitado?"Apagando AP":"Prendiendo AP");
             onAPToogle();
         }
 

@@ -1,19 +1,16 @@
 
 const rutaApi = `${url}/api/redes`
-// const rutaApi = `http://192.168.0.104/api/redes`
+// const rutaApi = `http://192.168.0.107/api/redes`
 const container = document.querySelector("#container-redes")
 const btnSearch = document.querySelector("#btnBuscarRedes");
-const controller = new AbortController();
-let redes = [];
-let id ;
-btnSearch.addEventListener("click", () =>{
-    toogleButtonSearch(true);
-    llamaApi()
-});
+let redesAux = [];
+let id;
 
-const selecWifi = (button)=>{
+
+
+const onBotonSeleccionaRed = (button)=>{
     const {id:index} = button.dataset 
-    const {ssid,enc} = redes[index]
+    const {ssid,enc} = redesAux[index]
 
     document.querySelector("#txtNombreRed").value = ssid;
 
@@ -25,15 +22,7 @@ const selecWifi = (button)=>{
 }
 
 
-container.addEventListener("click",e=>{
-    const {target} = e
-    if(target.tagName == "BUTTON"){
-        selecWifi(target)
-    }
-})
-
-
-const toogleButtonSearch= (disabled = true)=>{
+const toogleButtonSearchDisabled= (disabled = true)=>{
     if(disabled){
         btnSearch.classList.add("buscando")
     }else{
@@ -49,11 +38,15 @@ const borraNodos = (element)=>{
     }
     element.innerHTML="";
 }
-const agregaFila = ({id,ssid,rssi,enc,channel})=>{
+
+
+//peticion
+const agregaFila = ({id,ssid,rssi,bssid,enc,channel})=>{
     const template = `
        <tr>
             <td>${id+1}</td>
             <td>${ssid}</td>
+            <td>${bssid}</td>
             <td>${rssi}</td>
             <td>${enc}</td>
             <td>${channel}</td>
@@ -64,16 +57,13 @@ const agregaFila = ({id,ssid,rssi,enc,channel})=>{
     `;
     
     container.innerHTML += template;
-    toogleButtonSearch(false)
 }
 
 const compruebajson = (json)=>{
-    if(json.count > 0){
 
-        redes = json.redes;
-
-        for(let i =0;i<redes?.length;i++){
-
+    const {count = 0,redes } = json
+    if(count > 0){
+        for(let i = 0; i < redes?.length; i++){
             let red = redes[i];
 
             agregaFila({
@@ -82,6 +72,8 @@ const compruebajson = (json)=>{
             })
 
         }
+        toogleButtonSearchDisabled(false);
+        redesAux = redes;
     }else{
         setTimeout(llamaApi,5000)
     }
@@ -101,21 +93,33 @@ const realizaPeticion = (url) => {
 
         }
         console.log(err);
-        toogleButtonSearch(false)
+        toogleButtonSearchDisabled(false)
     })
 }
  
+
 function llamaApi (){
     realizaPeticion(rutaApi)
 
 };
 
-// Proxy
 
 
+btnSearch.addEventListener("click", () =>{
+    toogleButtonSearchDisabled(true);
+    llamaApi()
+});
+container.addEventListener("click",e=>{
+    const {target} = e
+    if(target.tagName == "BUTTON"){
+        onBotonSeleccionaRed(target)
+    }
+})
 
 
-
+// --------------------------------------------------------
+// Seccion proxy
+// --------------------------------------------------------
 const habilitarProxy = document.getElementById("proxy-habilitado");
 const txtProxy = document.getElementById("proxy");
 const txtPuerto = document.getElementById("puerto");

@@ -59,7 +59,7 @@
                     </a>
                     <ul class="dropdown">
                         <li class="dropdown__item  ">
-                            <a href="/confiUser" class="dropdown__link">Configurar wifi</a>
+                            <a href="/confiUser" class="dropdown__link">Usuario</a>
                         </li>
                     </ul>
                 </li>
@@ -85,7 +85,7 @@
                     <div class="info-footer">WIFI</div>
                 </div>
             </div>
-            <form method="post" action="/confiWifi">
+            <form method="post" action="/confiWifi" id="frm">
                 <div class="container-rfid">
                     <div class="fill">
                         <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">
@@ -93,7 +93,8 @@
                             <img src="www/search.svg" alt="" />
                         </button>
                     </div>
-                    <!--  -->
+                    
+                    <!-- WIFI -->
                     <p class="sep">
                         <span>WIFI</span>
                     </p>
@@ -107,10 +108,15 @@
                         <label for="">Contraseña</label>
                     </div>
 
-                    <div>
-                        <div>
-                            <label for="">Habilitar proxy</label>
-                            <input %HabiProxy% type="checkbox" name="HabiProxy" id="proxy-habilitado" />
+                    <!-- Proxy -->
+                    <div class="sep">
+                        <span>Proxy</span>
+                    </div>
+                    
+                        <div class="anim-checkbox anim-checkbox--sucess" >
+                            <input id="proxy-habilitado" type="checkbox" name="proxyHabi" %HabiProxy% >
+
+                            <label for="proxy-habilitado">Habilitar proxy</label>
                         </div>
                         <div class="input-container">
                             <input id="proxy" type="text" placeholder=" " value="%proxy%" name="proxy" />
@@ -121,25 +127,25 @@
                                 name="puerto" />
                             <label for="">Puerto</label>
                         </div>
-                    </div>
+                    
                     <!-- Punto de acceso -->
                     <p class="sep">
                         <span>Punto de acceso</span>
                     </p>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="%nombreAP%" name="servidor" />
+                        <input type="text" placeholder=" " value="%nombreAP%" name="nombreAP" />
                         <label for="">Nombre punto de acceso</label>
                     </div>
                     <div class="input-container">
-                        <input type="text" placeholder=" " value="%contraAP%" name="api" />
+                        <input type="text" placeholder=" " value="%contraAP%" name="contraAP" />
                         <label for="">Contraseña punto de acceso</label>
                     </div>
-                    <div>
-                        <label for="">
-                            Habilitar punto de acceso
-                            <input type="checkbox" name="APHabilitado" id="" %APHabilitado% />
-                        </label>
+                    <div class="anim-checkbox anim-checkbox--success" >
+                        <input id="ap-habilitado" type="checkbox" name="APHabilitado" %APHabilitado% >
+
+                        <label for="ap-habilitado">Habilitar punto de acceso</label>
                     </div>
+                    
                     <div class="container-buttons">
                         <button class="btn btn-success">Guardar</button>
                         <button class="btn btn-danger" type="reset">Cancelar</button>
@@ -154,6 +160,7 @@
                         <thead class="table-header">
                             <th>Id</th>
                             <th>Nombre</th>
+                            <th>Dirección física</th>
                             <th>Señal</th>
                             <th>Seguridad</th>
                             <th>Canal</th>

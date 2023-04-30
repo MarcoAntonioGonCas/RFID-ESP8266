@@ -20,7 +20,7 @@ AsyncWebSocket asyncSocket("/ws");
 // Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
 AsyncWebServer asyncServer(80);
 DNSServer dnsServer;
-bool mostrarIPSTA = true;
+
 
 //------------------------------------
 // Este objeto es en donde indicaremos en que pines esta conectado nuestro
@@ -43,11 +43,11 @@ ledLibClass ledWIFI;
 // Inicia la configuracion del wifi tanto modo estacion como modo
 // punto de acceso 
 void iniciarWIFIAP(){
-  setNameAP();
+  
   delayMicroseconds(100);
    
   configAPWIFI();
-  toogleAP();
+  conectarAP();
   conectarWiFi();
 }
 //=============================================================
@@ -61,10 +61,10 @@ void iniciarSocket()
 // Inicia el servidor web al igual que el DNS
 void iniciarServerYDNS()
 {
-
   dnsServer.setTTL(300);
   dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
-  dnsServer.start(DNS_PORT, "www.rfid.com", apIp);
+  dnsServer.start(DNS_PORT,"www.rfid.com",apIp);
+
   //--------------------------------------------
   addRouters(asyncServer);
   asyncServer.addHandler(&asyncSocket);
@@ -105,6 +105,7 @@ bool iniciarLittleFS()
 // con sus respectivas configuraciones de config.h
 bool iniciaTodo()
 {
+  setNameAP();
   //-----------LEDS-----------------
   iniciarLeds();
   //----------LITTLEFS------------------
@@ -129,6 +130,7 @@ void setup()
   Serial.begin(9600);
   SPI.begin();
   rfid.PCD_Init();
+  WiFi.persistent(false);
   iniciaTodo();
 }
 
@@ -136,6 +138,8 @@ void setup()
 // Metodo loop el cual se ejecutara infinitamente
 void loop()
 {
+  
+  loopRestart();
   dnsServer.processNextRequest();
   ledWIFI.loop();
   ledRFID.loop();
@@ -146,8 +150,6 @@ void loop()
   loopRfid();
   loopButtonAPReset();
 
-
   enviarInfoWs(2000, asyncSocket);
   comprobarClientesWs(1000, asyncSocket);
-
 }

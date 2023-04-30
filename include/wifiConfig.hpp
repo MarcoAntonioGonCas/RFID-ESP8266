@@ -1,69 +1,61 @@
 
 //=============================================================
 // Indica si el ESP se encuentra concectado a una red WI-FI
+
+static bool mostrarInfoAp = false;
+static bool mostrarInfoWifi = true;
+
 bool wifiConectado()
 {
   return WiFi.localIP().isSet();
 }
 //Cambia la el nombre del punto de aceso WIFI
-void toogleAP()
+void conectarAP()
 {
+  mostrarInfoAp = true;
+  
   if (!apHabilitado){
     WiFi.softAPdisconnect();
     Serial.println("Punto de acceso apagado");
     return;
   }
-  Serial.println(F("Iniciado Punto de acceso"));
-  while (!WiFi.softAP(ssidAP, passwordAP))
+  
+  Serial.println(F("\nIniciado Punto de acceso"));
+  Serial.println(ssidAP);
+  Serial.println(passwordAP);
+
+  int intentos  = 0; 
+  
+  while (!WiFi.softAP(ssidAP, passwordAP) and intentos < 20)
   { 
-    Serial.print(F("."));
-    delay(100);
+    Serial.print(".");
+    delay(200);
+    intentos++;
   }
-  Serial.println(F("Punto de acceso iniciado"));
-  Serial.println(WiFi.softAPSSID());
-  Serial.println(WiFi.softAPIP());
+    Serial.println(F("\nPunto de acceso iniciado"));
+    Serial.println(WiFi.softAPSSID());
+    Serial.println(WiFi.softAPIP());
 }
 //=============================================================
 // Inicia una nueva conexion a una red Wi-Fi
 // Esto con el nombre y contraeña puestos en config.h
+//=============================================================
 void conectarWiFi()
 {
-  Serial.println("Entrando a la una nueva conexion wifi");
-  //Compara si existe una 
-  if( (ssid.compareTo(WiFi.SSID()) == 0 and password.compareTo(WiFi.psk()) == 0 ) and
-      (ssid.compareTo("") !=0 )){
-        Serial.println("Saliendo de la conexion de red wifi");
-    return;
-  }
-  Serial.println("Comprobando wificonectado");
-  wifiConectado();
-  Serial.println("Saliendo ");
+  Serial.println("Conectando a la red WIFI....");
 
   if (wifiConectado())
   {
-    // WiFi.softAPdisconnect(true);
-    WiFi.disconnect(true);
-    Serial.println("Desconectando la conexion actual wifi");
-    delay(100);
-    restartESP();
+    restart = true;
+    return;
   }
-  Serial.println(ssid);
-  Serial.println(password);
+
   WiFi.begin(ssid, password);
-  Serial.println("Conectando....");
+
+  Serial.println(ssid);
 }
 
-//=============================================================
-// inicia el puento de acceso del ESP
-// Con el nombre y contraseña puestos en config.h
-void configAPWIFI()
-{
-  WiFi.persistent(false);
-  WiFi.mode(WiFiMode::WIFI_AP_STA);
-  WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
-  WiFi.setAutoReconnect(true);
-  //=======================================================
-}
+
 
 
 
@@ -72,22 +64,36 @@ void loopAP(){
 }
 
 //=============================================================
-// Indica el estado de la conexion WI-Fi atravez de un led
+// Metodo que se ejecutara en la funcion loop e indicara
+// si existe una conexion wifi atravez del led indicador
+//=============================================================
 void loopWiFi()
 {
   if (!wifiConectado())
   {
     ledWIFI.prenderInfinito(1000, 500);
-    mostrarIPSTA = true;
+    mostrarInfoWifi = true;
   }
   else
   {
     ledWIFI.parar();
     ledWIFI.prender();
-    if (mostrarIPSTA)
+    if (mostrarInfoWifi)
     {
       Serial.printf("Conectado a WIFI %s con ip: %s", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
-      mostrarIPSTA = false;
+      mostrarInfoWifi = false;
     }
   }
+}
+
+
+//=============================================================
+// Configuramos el WIFI como modo Punto de acceso y estacion
+//=============================================================
+void configAPWIFI()
+{
+  
+  WiFi.mode(WiFiMode::WIFI_AP_STA);
+  WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
+  WiFi.setAutoReconnect(true);
 }
