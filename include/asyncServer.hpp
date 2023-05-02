@@ -1,58 +1,9 @@
-void obtenerValorDePeticion(AsyncWebServerRequest *req,const char * nombreParametroPeticion, String &valorNuevaConfiguracion, bool post=true){
-   valorNuevaConfiguracion = "";
-
-   if( req->hasParam(nombreParametroPeticion, post)){
-      valorNuevaConfiguracion = req->getParam(nombreParametroPeticion, post)->value();
-      valorNuevaConfiguracion.trim();
-   }
-
-}
-bool obtenerValorYComparar(AsyncWebServerRequest *req,const char * nombreParam, String &valorNuevaConfiguracion,String &valorConfiguracion, bool vacio = false, bool post =true){
-   valorNuevaConfiguracion = "";
-   obtenerValorDePeticion(req,nombreParam,valorNuevaConfiguracion,post);
-   //Comparamos que los valores no sean iguales o si esta vacio 
-   //Dependiendo del parametro
-
-   if(vacio){
-         if( valorNuevaConfiguracion.compareTo(valorConfiguracion) != 0){
-            valorConfiguracion = valorNuevaConfiguracion;
-            return true;
-         }else{
-            return false;
-         }
-   }else{
-      if( valorNuevaConfiguracion.compareTo(valorConfiguracion) != 0 and 
-         !valorNuevaConfiguracion.isEmpty()){
-            valorConfiguracion = valorNuevaConfiguracion;
-            return true;
-         }else{
-            return false;
-         }
-   }
-   
-   
-}
-void enviarHtmlCarga(AsyncWebServerRequest *req,int tiempo,const char* url){
-   if(!LittleFS.exists("/carga.html")){
-      req->send(200,"text/plain","No sa encontro la pagina");
-      return;
-   }
-   File f = LittleFS.open("/carga.html", "r");
-   String doc = f.readString();
-
-
-   doc.replace("%time%",String(tiempo));
-   doc.replace("%link%",url);
-
-
-   req->send(200,"text/html",doc);
-}
+#include "asyncServerUtils.hpp"
 // -------------------------------------------------------------------
 // Petición para obtener la pagina de login
 // url: "/"
 // Método: GET
 // -------------------------------------------------------------------
-
 void handleLoginGet(AsyncWebServerRequest *req)
 {
    if (!LittleFS.exists("/login.html"))
@@ -63,8 +14,6 @@ void handleLoginGet(AsyncWebServerRequest *req)
 
    req->send(LittleFS, "/login.html", "text/html");
 }
-
-
 
 
 // -------------------------------------------------------------------
@@ -207,22 +156,22 @@ void handleConfiPost(AsyncWebServerRequest *req)
    String pServidor = "";
    String pRuta = "";
    String pAutorizacion = "";
+   
    bool pModoRegistro = false;
 
 
-   nuevaConfiguracion = 
-   obtenerValorYComparar(req,"servidor",pServidor,serverIp) ||
-   obtenerValorYComparar(req,"api",pRuta,rutaApi) ||
-   obtenerValorYComparar(req,"autorizacion",pAutorizacion,token);
-
-
-   pModoRegistro= req->hasParam("registro",true);
+   nuevaConfiguracion = obtenerValorYComparar(req,"servidor",pServidor,serverIp);
+   nuevaConfiguracion = obtenerValorYComparar(req,"api",pRuta,rutaApi) ? true : nuevaConfiguracion;
+   nuevaConfiguracion = obtenerValorYComparar(req,"autorizacion",pAutorizacion,token) ? true : nuevaConfiguracion;
+ 
+   pModoRegistro = req->hasParam("registro",true);
 
    if(pModoRegistro != modoRegistro){
       modoRegistro = pModoRegistro;
       nuevaConfiguracion = true;
    }
 
+   
    if(nuevaConfiguracion){
       guardarConfigjson();
    }
@@ -334,8 +283,9 @@ bool postWiFiAux(AsyncWebServerRequest *req){
    //contra - opcional
    bool cambio  = false;
    String pNombre = "";
-   obtenerValorDePeticion(req,"nombre",pNombre,true);
    String pContra = "";
+
+   obtenerValorDePeticion(req,"nombre",pNombre,true);
    obtenerValorDePeticion(req,"contra",pContra,true);
 
    Serial.println("POST WIFI");
@@ -350,10 +300,8 @@ bool postWiFiAux(AsyncWebServerRequest *req){
    }
 
    if(pContra.compareTo(password) != 0){
-      if(pContra.isEmpty() || pContra.length() >= 8){
-         password = pContra;
-         cambio = true;
-      }
+      password = pContra;
+      cambio = true;
    }
 
    return cambio;
@@ -393,10 +341,15 @@ bool postApAux(AsyncWebServerRequest *req){
       cambio = true;
    }
 
-   if(pContraAP.compareTo(passwordAP)!=0){
-      passwordAP = pContraAP;
-      cambio = true;
+   if(pContraAP.compareTo(passwordAP) != 0){
+      Serial.println("Longitud de la nueva contraseña");
+      Serial.println(pContraAP.length());
+      if(pContraAP.isEmpty() || pContraAP.length() >= 8){
+         passwordAP = pContraAP;
+         cambio = true;
+      }
    }
+
    if(pApHabilitado != apHabilitado){
       apHabilitado = pApHabilitado;
       cambio = true;
@@ -414,7 +367,7 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
    bool cambioProxy = false;
 
    cambioProxy = postProxyAux(req);
-   change = postWiFiAux(req) || postApAux(req);
+   change = postWiFiAux(req) | postApAux(req);
 
    Serial.println("POST API AP GUardao comopleto en memoria");
 
@@ -512,7 +465,9 @@ void addRouters(AsyncWebServer &asyncServer)
    
    asyncServer.on("/home", HTTP_GET, handlehomeGet);
 
+   asyncServer.on("logout",HTTP_GET,[](AsyncWebServerRequest*req)->void{
 
+   });
    asyncServer.on("/confi", HTTP_GET, handleConfiGet);
    asyncServer.on("/confi", HTTP_POST, handleConfiPost);
 

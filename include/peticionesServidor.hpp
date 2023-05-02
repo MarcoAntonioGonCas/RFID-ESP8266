@@ -11,7 +11,6 @@ String jsonStrWS;
 // Utiliza la ruta de la Api configurada en archivos de configuracion
 void enviarPostApi(String &uuid)
 {
-   
 
    if (WiFi.status() != WL_CONNECTED)
    {

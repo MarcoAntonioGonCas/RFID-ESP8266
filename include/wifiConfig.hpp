@@ -1,8 +1,6 @@
 
 //=============================================================
 // Indica si el ESP se encuentra concectado a una red WI-FI
-
-static bool mostrarInfoAp = false;
 static bool mostrarInfoWifi = true;
 
 bool wifiConectado()
@@ -12,29 +10,29 @@ bool wifiConectado()
 //Cambia la el nombre del punto de aceso WIFI
 void conectarAP()
 {
-  mostrarInfoAp = true;
-  
+  WiFi.softAPdisconnect();
+  WiFi.enableAP(apHabilitado);
+
   if (!apHabilitado){
     WiFi.softAPdisconnect();
     Serial.println("Punto de acceso apagado");
     return;
   }
   
-  Serial.println(F("\nIniciado Punto de acceso"));
+  Serial.println(F("\nIniciando Punto de acceso"));
   Serial.println(ssidAP);
   Serial.println(passwordAP);
 
   int intentos  = 0; 
-  
   while (!WiFi.softAP(ssidAP, passwordAP) and intentos < 20)
   { 
     Serial.print(".");
     delay(200);
     intentos++;
   }
-    Serial.println(F("\nPunto de acceso iniciado"));
-    Serial.println(WiFi.softAPSSID());
-    Serial.println(WiFi.softAPIP());
+  Serial.println(F("\nPunto de acceso iniciado"));
+  Serial.println(WiFi.softAPSSID());
+  Serial.println(WiFi.softAPIP());
 }
 //=============================================================
 // Inicia una nueva conexion a una red Wi-Fi
@@ -43,7 +41,6 @@ void conectarAP()
 void conectarWiFi()
 {
   Serial.println("Conectando a la red WIFI....");
-
   if (wifiConectado())
   {
     restart = true;
@@ -51,7 +48,6 @@ void conectarWiFi()
   }
 
   WiFi.begin(ssid, password);
-
   Serial.println(ssid);
 }
 
