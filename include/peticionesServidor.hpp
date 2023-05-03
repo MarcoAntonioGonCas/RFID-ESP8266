@@ -21,7 +21,13 @@ void enviarPostApi(String &uuid)
    json["uuid"] = uuid;
 
    serializeJson(json, jsonStr);
-   http.begin(cli, (serverIp + rutaApi));
+   
+   if(certificadoHttps.isEmpty()){
+      http.begin(cli, (serverIp + rutaApi));
+   }else{
+      cliHttps.setTrustAnchors(new X509List(certificadoHttps.c_str()));
+      http.begin(cliHttps, (serverIp + rutaApi));
+   }
    http.addHeader("Authorization", "Bearer " + String(token));
    http.addHeader("Content-Type", "application/json");
    http.addHeader("Connection", "keep-alive");

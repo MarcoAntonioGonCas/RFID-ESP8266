@@ -5,6 +5,7 @@
 //Correcion de error
 HTTPClient http;
 WiFiClient cli;
+WiFiClientSecure cliHttps;
 
 //=====================================================
 // WIFI pagina web
@@ -23,6 +24,8 @@ int puerto = 0;
 //=====================================================
 String serverIp = "http://192.168.0.104:44355";
 String rutaApi = "/api/ident/";
+String certificadoHttps = "";
+
 bool modoRegistro = false;
 
 

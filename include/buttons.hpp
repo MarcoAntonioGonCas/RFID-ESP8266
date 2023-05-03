@@ -1,8 +1,7 @@
 // Variables auxiliares que indican cuanto tiempo esta siendo presiondo en boton
-bool press = false;
-ulong tiempoInicialPresionado = 0;
-ulong tiempoEspera = 4000;
-ulong tiempoPresionado = 0;
+static ulong tiempoInicialPresionado = 0;
+static ulong tiempoEspera = 4000;
+static ulong tiempoPresionado = 0;
 
 
 /// @brief Desabilita o habilita el punto de acceso
@@ -17,7 +16,8 @@ static void onAPToogle(){
 /// @brief Borra las configuraciones realizadas y regresa a las puestas de fabrica
 static void onResetConfi(){
     delay(400);
-    resetConfig();
+    borrarConfig();
+    reiniciarESP();
 }
 
 

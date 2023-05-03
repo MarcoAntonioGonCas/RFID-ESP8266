@@ -1,4 +1,3 @@
-#include "asyncServerUtils.hpp"
 // -------------------------------------------------------------------
 // Petición para obtener la pagina de login
 // url: "/"
@@ -138,6 +137,7 @@ void handleConfiGet(AsyncWebServerRequest *req)
    doc.replace("%servidor%", serverIp);
    doc.replace("%api%", rutaApi);
    doc.replace("%autorizacion%",token);
+   doc.replace("%certificado%",certificadoHttps);
    doc.replace("%registro%",modoRegistro ? "checked":"");
 
    req->send(200, "text/html", doc);
@@ -156,14 +156,16 @@ void handleConfiPost(AsyncWebServerRequest *req)
    String pServidor = "";
    String pRuta = "";
    String pAutorizacion = "";
-   
+   String pCertificado = "";
+
+
    bool pModoRegistro = false;
 
 
    nuevaConfiguracion = obtenerValorYComparar(req,"servidor",pServidor,serverIp);
    nuevaConfiguracion = obtenerValorYComparar(req,"api",pRuta,rutaApi) ? true : nuevaConfiguracion;
    nuevaConfiguracion = obtenerValorYComparar(req,"autorizacion",pAutorizacion,token) ? true : nuevaConfiguracion;
- 
+   nuevaConfiguracion = obtenerValorYComparar(req,"certificado",pCertificado,certificadoHttps,true) ? true : nuevaConfiguracion;
    pModoRegistro = req->hasParam("registro",true);
 
    if(pModoRegistro != modoRegistro){
@@ -465,9 +467,11 @@ void addRouters(AsyncWebServer &asyncServer)
    
    asyncServer.on("/home", HTTP_GET, handlehomeGet);
 
-   asyncServer.on("logout",HTTP_GET,[](AsyncWebServerRequest*req)->void{
+   asyncServer.on("logout",HTTP_GET,[](AsyncWebServerRequest*req){
 
    });
+
+
    asyncServer.on("/confi", HTTP_GET, handleConfiGet);
    asyncServer.on("/confi", HTTP_POST, handleConfiPost);
 
@@ -478,6 +482,10 @@ void addRouters(AsyncWebServer &asyncServer)
    //confiUser
    asyncServer.on("/confiUser",HTTP_GET,handleConfiUserGet);
    asyncServer.on("/confiUser",HTTP_POST,handleConfiUserPost);
+
+   //confiReset
+   asyncServer.on("/confiReset",HTTP_GET,handleConfiResetGet);
+   asyncServer.on("/resetAll",HTTP_GET,handleResetAllGet);
 
 
    asyncServer.on("/api/redes", HTTP_GET, handleApiGetNetworks);

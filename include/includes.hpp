@@ -5,7 +5,13 @@
 #include "configSave.hpp"
 //------------------------------------
 #include "peticionesServidor.hpp"
+
+
 #include "asyncSocket.hpp"
+#include "asyncServerUtils.hpp"
+#include "asyncServerExten.hpp"
 #include "asyncServer.hpp"
+
+
 #include "rfidRead.hpp"
 #include "buttons.hpp"

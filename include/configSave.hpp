@@ -4,7 +4,7 @@
 void guardarConfigWifijson()
 {
     String strJson;
-    StaticJsonDocument<1000> json;
+    StaticJsonDocument<2000> json;
 
     json["ssid"] = ssid;
     json["password"] = password;
@@ -20,7 +20,7 @@ void guardarConfigWifijson()
     json["rutaApi"] = rutaApi;
     json["modoRegistro"] = modoRegistro;
     json["autorizacion"] = token;
-
+    json["certificadoHttps"] = certificadoHttps;
 
     serializeJson(json, strJson);
     Serial.println("Guardando json:::::");
@@ -59,7 +59,7 @@ void leerConfigWifiJson()
     rutaApi = json["rutaApi"].as<String>();
     modoRegistro = json["modoRegistro"].as<bool>();
     token = json["autorizacion"].as<String>();
-
+    certificadoHttps = json["certificadoHttps"].as<String>();
 
     Serial.println("Leyendo json:::::");
     serializeJson(json,Serial);
@@ -92,7 +92,16 @@ void leerConfigUserJson(){
     usuarioLogin = json["usuarioLogin"].as<String>();
     contraLogin = json["contraLogin"].as<String>();
 }
-
+void borrarConfig(){
+    if(LittleFS.exists("/loginConfig.json")){
+        LittleFS.remove("/loginConfig.json");
+    }
+    
+    if (LittleFS.exists("/config.json"))
+    {
+        LittleFS.remove("/config.json");
+    }
+}
 void resetConfig(){
     if(LittleFS.exists("/loginConfig.json")){
         LittleFS.remove("/loginConfig.json");
@@ -107,6 +116,8 @@ void resetConfig(){
     delay(100);
     ESP.restart();
 }
+
+
 void leerConfig(){
     leerConfigUserJson();
     leerConfigWifiJson();

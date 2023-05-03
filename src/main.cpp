@@ -12,8 +12,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-
-
+// #include <WiFiClientSecure.h>
+// #include <WiFiClientSecureBearSSL.h>
 
 // Objeto en donde indicamos la ruta de nuestro websocket
 AsyncWebSocket asyncSocket("/ws");

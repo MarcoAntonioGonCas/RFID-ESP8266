@@ -60,6 +60,9 @@
                         <li class="dropdown__item  ">
                             <a href="/confiUser" class="dropdown__link">Usuario</a>
                         </li>
+                        <li class="dropdown__item ">
+                            <a href="/confiReset" class="dropdown__link">Configuraciones avanzadas</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item ">
@@ -94,9 +97,15 @@
                         <input type="text" placeholder=" " value="%servidor%" name="servidor">
                         <label for="">Servidor</label>
                     </div>
+
                     <div class="input-container">
                         <input type="text" placeholder=" " value="%api%" name="api">
                         <label for="">Ruta api</label>
+                    </div>
+
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="%certificado%" name="certificado">
+                        <label for="">Certificado HTTPS</label>
                     </div>
                     <div class="inline">
                         <div class="caption">Baerer</div>
@@ -106,10 +115,15 @@
                             <label for="">Autorizacion de api</label>
                         </div>
                     </div>
-                        <div class="anim-checkbox anim-checkbox--primary" >
+
+                    
+                    <div class="anim-checkbox anim-checkbox--primary" >
                         <input id="ch" type="checkbox" name="registro" %registro%>
                         <label for="ch">Modo registro</label>
                     </div>
+
+                        
+                            
                     
                     <div class="container-buttons">
                         <button class="btn btn-success">Guardar</button>

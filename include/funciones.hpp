@@ -3,33 +3,32 @@ bool restart = false;
 
 static long timeRestartIint = 0;
 
+
+void reiniciarESP(){
+    asyncServer.end();
+        
+    WiFi.stopSmartConfig();
+    WiFi.disconnect(true);
+    // WiFi.softAPdisconnect(true);
+    delay(200);
+    ESP.restart();
+}
+void limpiarConfigESP(){
+    ESP.eraseConfig();
+}
+void limpiarReiniciarESP(){
+    limpiarConfigESP();
+    reiniciarESP();
+}
 void loopRestart(){
     if(restart){
         if(timeRestartIint == 0) timeRestartIint = millis();
 
         if(millis() - timeRestartIint > 1000){
-
-            asyncServer.end();
-        
-            WiFi.stopSmartConfig();
-            WiFi.disconnect(true);
-            // WiFi.softAPdisconnect(true);
-            delay(200);
-            ESP.restart();
+            reiniciarESP();
         }
     }
 }
-void restartESP(){
-    ESP.restart();
-}
-void clearConfigESP(){
-    ESP.eraseConfig();
-}
-void clearAndRestartESP(){
-    clearConfigESP();
-    restartESP();
-}
-
 uint8_t getIdESP(){  
     return ESP.getChipId();
 }
@@ -37,7 +36,14 @@ uint8_t getIdESP(){
 void setNameAP(){
     ssidAP = "RFID_AP" + String(getIdESP());
 }
-//Helpers
+//-----------------------------------------------------------------
+//Helper
+//-----------------------------------------------------------------
+
+
+/// @brief Convierto un string a un obejeto IPAddress
+/// @param str Cadena con formato IPV4
+/// @return Retorna un objeto IPAdrres en caso de la cadena no sea valida retorna un objeto vacio
 IPAddress toIP(String& str){
     char puntos = 0;
     u8_t partes[4] = {0,0,0,0};
@@ -63,6 +69,11 @@ IPAddress toIP(String& str){
     }
 }
 
+
+
+/// @brief Indica si la cadena es un numero
+/// @param str Cadena la cual sera evaluada
+/// @return Retorna un booleano el cual indica si se puede convertir a un numero
 bool isNum(String& str){
     if(str.length()==0){
         return false;
@@ -104,6 +115,10 @@ bool isNum(String& str){
     return isNum;
 }
 
+
+/// @brief Convierte la enumeracion wl_enc_type a string
+/// @param enc wl_enc_type
+/// @return Valor de enumeracion en string
 char* encryptionTypeToString(uint8_t enc){
     switch(enc) {
       case ENC_TYPE_NONE:
