@@ -56,10 +56,10 @@
                     <div class="row"></div>
                 </a>
                 <ul class="dropdown">
-                    <li class="dropdown__item dropdown__item--active ">
+                    <li class="dropdown__item ">
                         <a href="/confiUser" class="dropdown__link">Usuario</a>
                     </li>
-                    <li class="dropdown__item ">
+                    <li class="dropdown__item  dropdown__item--active">
                         <a href="/confiRestore" class="dropdown__link">Configuraciones avanzadas</a>
                     </li>
                 </ul>
@@ -104,29 +104,48 @@
             </div>
         </div>
 
-        <form method="post" action="/confiUser">
-            <div class="container-rfid">
+        
+        <div class="container-rfid">
+            
+            <div class="sep">
+                <span>Restablecer a datos de fabrica</span>
+            </div>
+                <div class="container-buttons">
+                    <button class="btn btn-primary" type="button" data-toogle="modal" data-target="#modal-confirmacion">
+                        Restablecer
+                    </button>
+                    <a class="btn btn-danger" href="/home">Cancelar</a>
+                </div>
                 <div class="sep">
-                    <span>Configuracion de incio de sesion</span>
-                </div>
-                <div class="input-container">
-                    <input type="text" placeholder=" " value="%usuario%" name="usuario">
-                    <label for="">Nombre de usuario</label>
-                </div>
-                <div class="input-container input-password">
-                    <div class="input-password__img" data-toogle="#contra">
-                        <img src="www/contra.svg" alt="" >
-
-                    </div>
-                    <input id="contra" type="password" placeholder=" " value="%contra%" name="contra">
-                    <label for="">Contraseña</label>
+                    <span>Deaseas reiniciar el dispositivo</span>
                 </div>
                 <div class="container-buttons">
-                    <button class="btn btn-success">Guardar</button>
-                    <button class="btn btn-danger" type="reset">Cancelar</button>
+                    <a class="btn btn-warning" href="/restart">Reiniciar</a>
+                </div>
+        </div>
+        
+
+
+        <div class="modal" id="modal-confirmacion">
+            <div class="modal-close" data-close="modal"></div>
+            <div class="reset-container center-flex">
+                <p>¿Deseas borrar los datos guardados y volver a los datos de fabrica?</p>
+                <div>
+
+                    <a class="btn btn-success btn-round" href="/restoreAll">
+                        <div class="row-icon">
+                            
+                        </div>
+                    </a>
+                    <a class="btn btn-danger btn-round" data-close="modal">
+                        
+                        <div class="close-icon">
+                            
+                        </div>
+                    </a>
                 </div>
             </div>
-        </form>
+        </div>
     </main>
 
     <script src="www/scriptPrin.js"></script>

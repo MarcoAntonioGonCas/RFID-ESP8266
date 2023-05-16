@@ -1,5 +1,6 @@
 //----------------------------------------
 // Importamos las librerias a utlizar
+//----------------------------------------
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
@@ -12,8 +13,9 @@
 #include <ESP8266HTTPClient.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-// #include <WiFiClientSecure.h>
-// #include <WiFiClientSecureBearSSL.h>
+#include <WiFiClientSecure.h>
+
+uint32_t stackInicial = ESP.getFreeHeap();
 
 // Objeto en donde indicamos la ruta de nuestro websocket
 AsyncWebSocket asyncSocket("/ws");
@@ -21,37 +23,36 @@ AsyncWebSocket asyncSocket("/ws");
 AsyncWebServer asyncServer(80);
 DNSServer dnsServer;
 
-
-//------------------------------------
-// Este objeto es en donde indicaremos en que pines esta conectado nuestro
-// Rfid el igual
-
 // Creamos dos objetos los cuales nos ayudaran a mostrar el estado del Wi-fi
 // y si se ha leido una tarjeta rfid
+//-----------------------------------------------
+
 ledLibClass ledRFID;
 ledLibClass ledWIFI;
 
-
+bool enviarEstado = false;
 //-----------------------------------------------
 // Incluimos los archivos de cabezera que tenemos
 // en el archivo includes.hpp
-//---------------------------------------
+//-----------------------------------------------
 #include "includes.hpp"
 
 
 //=============================================================
 // Inicia la configuracion del wifi tanto modo estacion como modo
 // punto de acceso 
+//=============================================================
 void iniciarWIFIAP(){
   
   delayMicroseconds(100);
    
   configAPWIFI();
-  conectarAP();
+  iniciarAP();
   conectarWiFi();
 }
 //=============================================================
 // Inicia los eventos websockets
+//=============================================================
 void iniciarSocket()
 {
   asyncSocket.onEvent(&onWsEvent);
@@ -59,6 +60,7 @@ void iniciarSocket()
 
 //=============================================================
 // Inicia el servidor web al igual que el DNS
+//=============================================================
 void iniciarServerYDNS()
 {
   dnsServer.setTTL(300);
@@ -74,9 +76,9 @@ void iniciarServerYDNS()
 }
 
 
-
 //=============================================================
 // Inicia los objetos leds con lo pines configurados en config.h
+//=============================================================
 void iniciarLeds()
 {
   ledRFID.begin(pinLedInfoRfid, TipoLed::Catodo);
@@ -86,6 +88,9 @@ void iniciarLeds()
 //=============================================================
 // Inicia el sistema de archivos en nuestro ESP para leer archivos
 // y escribir en el
+//=============================================================
+
+
 bool iniciarLittleFS()
 {
   Serial.println();
@@ -103,6 +108,7 @@ bool iniciarLittleFS()
 //=============================================================
 // Metodo auxiliar en donde se iniciaran todos los objetos de la
 // con sus respectivas configuraciones de config.h
+//=============================================================
 bool iniciaTodo()
 {
   setNameAP();
@@ -123,7 +129,7 @@ bool iniciaTodo()
 //=============================================================
 // Metodo principal en donde inicia nuestra aplicacion
 // Este solo se ejecutar una  vez, al principio
-
+//=============================================================
 void setup()
 {
   
@@ -136,8 +142,16 @@ void setup()
 
 //=============================================================
 // Metodo loop el cual se ejecutara infinitamente
+//=============================================================
 void loop()
 {
+  
+  if(enviarEstado){
+    enviaSocket();
+    delayMicroseconds(100);
+    enviarEstado = false;
+  }
+
   
   loopRestart();
   dnsServer.processNextRequest();
@@ -149,7 +163,5 @@ void loop()
   loopAP();
   loopRfid();
   loopButtonAPReset();
-
-  enviarInfoWs(2000, asyncSocket);
-  comprobarClientesWs(1000, asyncSocket);
+  loopSocket();
 }

@@ -115,11 +115,34 @@ void handleConfiUserPost(AsyncWebServerRequest *req){
    }
 
 }
-
+// -------------------------------------------------------------------
+// Procesador de la plantilla, del arcivo /confi.html
+// -------------------------------------------------------------------
+String processorConfigGet(const String& var)
+{
+  if(var == "rssi"){
+   return String(WiFi.RSSI());
+  }else if(var == "servidor"){
+   return serverIp;
+  }else if(var == "api"){
+   return rutaApi;
+  }else if(var == "api-registro"){
+   return rutaApiRegistro;
+  }else if(var == "codigoInter"){
+   return codigoIntercambio;
+   }else if(var == "autorizacion"){
+   return token;
+  }else if(var == "certificado"){
+   return certificadoHttps;
+  }else if(var == "registro"){
+   return modoRegistro ? "checked":"";
+  }
+  return String();
+}
 // -------------------------------------------------------------------
 // Petición de la pagina principal de configuracion
 // url: "/confi"
-// Método: POST
+// Método: GET
 // -------------------------------------------------------------------
 void handleConfiGet(AsyncWebServerRequest *req)
 {
@@ -130,17 +153,18 @@ void handleConfiGet(AsyncWebServerRequest *req)
    }
 
    File f = LittleFS.open("/confi.html", "r");
-   String doc = f.readString();
+   // String doc = f.readString();
 
 
-   doc.replace("%rssi%",String(WiFi.RSSI()));
-   doc.replace("%servidor%", serverIp);
-   doc.replace("%api%", rutaApi);
-   doc.replace("%autorizacion%",token);
-   doc.replace("%certificado%",certificadoHttps);
-   doc.replace("%registro%",modoRegistro ? "checked":"");
+   // doc.replace("%rssi%",String(WiFi.RSSI()));
+   // doc.replace("%servidor%", serverIp);
+   // doc.replace("%api%", rutaApi);
+   // doc.replace("api-registro",rutaApiRegistro);
+   // doc.replace("%autorizacion%",token);
+   // doc.replace("%certificado%",certificadoHttps);
+   // doc.replace("%registro%",modoRegistro ? "checked":"");
 
-   req->send(200, "text/html", doc);
+   req->send(LittleFS,"/confi.html", "text/html",false, processorConfigGet);
 }
 
 // -------------------------------------------------------------------
@@ -150,22 +174,26 @@ void handleConfiGet(AsyncWebServerRequest *req)
 // -------------------------------------------------------------------
 void handleConfiPost(AsyncWebServerRequest *req)
 {
-   bool nuevaConfiguracion = false;
 
    //Varibles auxiliares
    String pServidor = "";
    String pRuta = "";
+   String pRutaRegistro = "";
    String pAutorizacion = "";
    String pCertificado = "";
+   String pCodigoInter = "";
 
-
+   bool nuevaConfiguracion = false;
    bool pModoRegistro = false;
-
+   bool nuevaAutorizacion = false;
 
    nuevaConfiguracion = obtenerValorYComparar(req,"servidor",pServidor,serverIp);
    nuevaConfiguracion = obtenerValorYComparar(req,"api",pRuta,rutaApi) ? true : nuevaConfiguracion;
-   nuevaConfiguracion = obtenerValorYComparar(req,"autorizacion",pAutorizacion,token) ? true : nuevaConfiguracion;
+   nuevaConfiguracion = obtenerValorYComparar(req,"apiRegistro",pRutaRegistro,rutaApiRegistro) ? true : nuevaConfiguracion;
+   nuevaConfiguracion = obtenerValorYComparar(req,"codigoInter",pCodigoInter,codigoIntercambio) ? true : nuevaConfiguracion;
    nuevaConfiguracion = obtenerValorYComparar(req,"certificado",pCertificado,certificadoHttps,true) ? true : nuevaConfiguracion;
+
+   nuevaAutorizacion = obtenerValorYComparar(req,"autorizacion",pAutorizacion,token);
    pModoRegistro = req->hasParam("registro",true);
 
    if(pModoRegistro != modoRegistro){
@@ -173,6 +201,10 @@ void handleConfiPost(AsyncWebServerRequest *req)
       nuevaConfiguracion = true;
    }
 
+   if(nuevaAutorizacion){
+      nuevaConfiguracion = true;
+      wifiClientConfigurado = false;
+   }
    
    if(nuevaConfiguracion){
       guardarConfigjson();
@@ -207,7 +239,7 @@ String processorWifiConfigGet(const String& var)
   }
 
 
-  return var;
+  return String();
 }
 
 
@@ -225,23 +257,23 @@ void handleWifiConfigGet(AsyncWebServerRequest *req){
    }
 
    File f = LittleFS.open("/confiWifi.html", "r");
-   String doc = f.readString();
+   // String doc = f.readString();
 
 
-   doc.replace("%nombre%", ssid);
-   doc.replace("%contra%", password);
-   doc.replace("%HabiProxy%", proxyHabilitado ? "checked":"");
-   doc.replace("%proxy%", proxy.isSet() ? proxy.toString():"");
-   doc.replace("%puerto%", String(puerto));
-   doc.replace("%nombreAP%", ssidAP);
-   doc.replace("%contraAP%", passwordAP);
-   doc.replace("%APHabilitado%", apHabilitado ? "checked":"");
-   doc.replace("%rssi%", String(WiFi.RSSI()));
+   // doc.replace("%nombre%", ssid);
+   // doc.replace("%contra%", password);
+   // doc.replace("%HabiProxy%", proxyHabilitado ? "checked":"");
+   // doc.replace("%proxy%", proxy.isSet() ? proxy.toString():"");
+   // doc.replace("%puerto%", String(puerto));
+   // doc.replace("%nombreAP%", ssidAP);
+   // doc.replace("%contraAP%", passwordAP);
+   // doc.replace("%APHabilitado%", apHabilitado ? "checked":"");
+   // doc.replace("%rssi%", String(WiFi.RSSI()));
 
-
-   //*************************************************************************
-   
-   AsyncWebServerResponse *response = req->beginResponse(200,"text/html",doc);
+   //*************************************************************************   
+   // AsyncWebServerResponse *response = req->beginResponse(200,"text/html",doc);
+  
+   AsyncWebServerResponse *response = req->beginResponse(LittleFS,"/confiWifi.html","text/html",false, processorWifiConfigGet);
    response->addHeader("Access-Control-Allow-Origin", "*");
    req->send(response);
 }
@@ -280,9 +312,6 @@ bool postProxyAux(AsyncWebServerRequest *req){
 // configuracion a cambiado solo nombre y contraseña e punto de acceso
 // ------------------------------------------------------------------
 bool postWiFiAux(AsyncWebServerRequest *req){
-   //#wifi
-   //nombre - requerido
-   //contra - opcional
    bool cambio  = false;
    String pNombre = "";
    String pContra = "";
@@ -315,10 +344,6 @@ bool postWiFiAux(AsyncWebServerRequest *req){
 // configuracion a cambiado solo nombre y contraseña e punto de acceso
 // -------------------------------------------------------------------
 bool postApAux(AsyncWebServerRequest *req){
-   //#punto de acceso
-   //APHabilitado - opcional
-   //nombreAP - requerido
-   //contraAP - opcional
    bool cambio = false;
    bool pApHabilitado = true;
 
@@ -392,61 +417,6 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
    }
 }
 
-
-//=============================================================
-// Envia un json con las conexiones wifi actuales
-// const String NombreSeguridad [] = {"ABIERTA","WEP","WPA_PSK","WPA2_PSK","WPA_WPA2_PSK","AUTH_MAX"};
-
-// -------------------------------------------------------------------
-// Petición de informacion de redes disponibles
-// url: "/api/redes"
-// Método: GET
-// -------------------------------------------------------------------
-void handleApiGetNetworks(AsyncWebServerRequest *req)
-{
-
-   int redesDispo = WiFi.scanComplete();
-
-   StaticJsonDocument<600> jsonWifi;
-   JsonArray jsonRedes = jsonWifi.createNestedArray("redes");
-   
-   if (redesDispo == -2)
-   {
-      jsonWifi["count"] = 0;
-      WiFi.scanNetworks(true);
-   }
-   else if(redesDispo)
-   {
-
-      
-      jsonWifi["count"] = redesDispo;
-      for (int i = 0; i < redesDispo; ++i)
-      {
-         JsonObject jsonRed = jsonRedes.createNestedObject();
-         jsonRed["ssid"] = WiFi.SSID(i);
-         jsonRed["bssid"] = WiFi.BSSIDstr(i);
-         jsonRed["rssi"] = WiFi.RSSI(i);
-         // jsonRed["enc"] = NombreSeguridad[WiFi.encryptionType(i)];
-         jsonRed["enc"] = encryptionTypeToString(WiFi.encryptionType(i));
-         jsonRed["channel"] = WiFi.channel(i);
-     }
-     
-      WiFi.scanDelete();
-
-      if(WiFi.scanComplete() == -2){
-         WiFi.scanNetworks(true);
-      }
-   }
-
-   String jsonString;
-   serializeJson(jsonWifi, jsonString);
-
-   AsyncWebServerResponse *response = req->beginResponse(200, "application/json", jsonString);
-   response->addHeader("Access-Control-Allow-Origin", "*");
-   req->send(response);
-
-}
-
 //-------------------------------------------------------------------
 // Indica en que parte de la memoria se encuentran los archivos
 // estaticos para el servidor
@@ -484,12 +454,15 @@ void addRouters(AsyncWebServer &asyncServer)
    asyncServer.on("/confiUser",HTTP_POST,handleConfiUserPost);
 
    //confiReset
-   asyncServer.on("/confiReset",HTTP_GET,handleConfiResetGet);
-   asyncServer.on("/resetAll",HTTP_GET,handleResetAllGet);
-
+   asyncServer.on("/confiRestore",HTTP_GET,handleConfiRestoretGet);
+   asyncServer.on("/restoreAll",HTTP_GET,handleRestoreAllGet);
+   asyncServer.on("/restart",HTTP_GET,handleRestartGet);
 
    asyncServer.on("/api/redes", HTTP_GET, handleApiGetNetworks);
+   asyncServer.on("/api/estadoServer", HTTP_GET, handleApiGetStatusServer);
+
+   asyncServer.on("/listDir",HTTP_GET,handleLisDirGet);
 
    asyncServer.onNotFound([](AsyncWebServerRequest *req)
-                         { req->send(LittleFS, "/noEncontrado.html", "text/html"); });
+                         { req->send(200, "text/html", "No encontrado"); });
 }

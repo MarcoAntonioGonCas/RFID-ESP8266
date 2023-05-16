@@ -20,6 +20,9 @@ void limpiarReiniciarESP(){
     limpiarConfigESP();
     reiniciarESP();
 }
+
+
+
 void loopRestart(){
     if(restart){
         if(timeRestartIint == 0) timeRestartIint = millis();
@@ -119,7 +122,7 @@ bool isNum(String& str){
 /// @brief Convierte la enumeracion wl_enc_type a string
 /// @param enc wl_enc_type
 /// @return Valor de enumeracion en string
-char* encryptionTypeToString(uint8_t enc){
+String encryptionTypeToString(uint8_t enc){
     switch(enc) {
       case ENC_TYPE_NONE:
         return "Abierta";

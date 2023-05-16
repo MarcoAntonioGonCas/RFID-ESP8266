@@ -1,14 +1,14 @@
+
 //============================================================
 // Guarda la confguracion en la memoria del ESP
 // En un archivo JSON para leerlo facilmente
 void guardarConfigWifijson()
 {
-    String strJson;
     StaticJsonDocument<2000> json;
 
     json["ssid"] = ssid;
     json["password"] = password;
-    json["proxyHabilitado"] = proxyHabilitado;
+    json["proxyH"] = proxyHabilitado;
     json["proxy"] = proxy.v4();
     json["puerto"] = puerto;
 
@@ -18,18 +18,21 @@ void guardarConfigWifijson()
 
     json["serverIp"] = serverIp;
     json["rutaApi"] = rutaApi;
+    json["rutaApiRegis"] = rutaApiRegistro;
     json["modoRegistro"] = modoRegistro;
     json["autorizacion"] = token;
-    json["certificadoHttps"] = certificadoHttps;
+    json["codigoInter"] = codigoIntercambio;
 
-    serializeJson(json, strJson);
-    Serial.println("Guardando json:::::");
-    Serial.println(strJson);
-    
     File f = LittleFS.open("/config.json", "w");
-    f.print(strJson);
+
+    Serial.println("Guardando json:::::");
+
+    serializeJson(json, f);
     f.close();
 }
+
+
+
 
 //=============================================================
 // Lee la configuracion desde la memoria del ESP
@@ -41,13 +44,13 @@ void leerConfigWifiJson()
         return;
     }
     File configFile = LittleFS.open("/config.json", "r");
-    StaticJsonDocument<1000> json;
+    StaticJsonDocument<2000> json;
     deserializeJson(json, configFile);
     configFile.close();
 
     ssid = json["ssid"].as<String>();
     password = json["password"].as<String>();
-    proxyHabilitado = json["proxyHabilitado"].as<bool>();
+    proxyHabilitado = json["proxyH"].as<bool>();
     uint32_t proxyAux = json["proxy"].as<uint32_t>();
     puerto = json["puerto"].as<int>();
 
@@ -57,29 +60,31 @@ void leerConfigWifiJson()
 
     serverIp = json["serverIp"].as<String>();
     rutaApi = json["rutaApi"].as<String>();
+    rutaApiRegistro = json["rutaApiRegis"].as<String>();
     modoRegistro = json["modoRegistro"].as<bool>();
     token = json["autorizacion"].as<String>();
-    certificadoHttps = json["certificadoHttps"].as<String>();
+    codigoIntercambio = json["codigoInter"].as<String>()  ;
 
     Serial.println("Leyendo json:::::");
-    serializeJson(json,Serial);
-    Serial.println();
-    Serial.println(ssidAP);
-    Serial.println(passwordAP);
-    
+    serializeJsonPretty(json,Serial);    
 
     if (proxyAux != 0) proxy = IPAddress(proxyAux);
 }
+
+
+
+
 void guardarConfigUserJson(){
-    String strJson;
+
     StaticJsonDocument<100> json;
 
     json["usuarioLogin"] = usuarioLogin;
     json["contraLogin"] = contraLogin;
-    serializeJson(json,strJson);
 
     File f=LittleFS.open("/loginConfig.json","w");
-    f.print(strJson);
+    serializeJson(json,f);
+    f.close();
+    
 }
 void leerConfigUserJson(){
     if(!LittleFS.exists("/loginConfig.json")){
@@ -92,6 +97,31 @@ void leerConfigUserJson(){
     usuarioLogin = json["usuarioLogin"].as<String>();
     contraLogin = json["contraLogin"].as<String>();
 }
+
+void guardarCertificadoJson(){
+    StaticJsonDocument<2000> json;
+    json["cert"] = certificadoHttps;
+
+    File f = LittleFS.open("/certi.json","w");
+    serializeJson(json,f);
+    f.close();
+}
+void leerCertificadoJson(){
+    if(!LittleFS.exists("/certi.json"))
+    {
+        return;
+    }
+
+    StaticJsonDocument<2000> json;
+
+    File f = LittleFS.open("/certi.json","r");
+
+    deserializeJson(json,f);
+    f.close();
+
+    certificadoHttps = json["cert"].as<String>();
+
+}
 void borrarConfig(){
     if(LittleFS.exists("/loginConfig.json")){
         LittleFS.remove("/loginConfig.json");
@@ -101,16 +131,12 @@ void borrarConfig(){
     {
         LittleFS.remove("/config.json");
     }
+    if(LittleFS.exists("/certi.json")){
+        LittleFS.remove("/certi.json");
+    }
 }
 void resetConfig(){
-    if(LittleFS.exists("/loginConfig.json")){
-        LittleFS.remove("/loginConfig.json");
-    }
-    
-    if (LittleFS.exists("/config.json"))
-    {
-        LittleFS.remove("/config.json");
-    }
+    borrarConfig();
 
     WiFi.disconnect(true);
     delay(100);
@@ -121,10 +147,12 @@ void resetConfig(){
 void leerConfig(){
     leerConfigUserJson();
     leerConfigWifiJson();
+    leerCertificadoJson();
 }   
 void guardarConfigjson(){
     guardarConfigUserJson();
     guardarConfigWifijson();
+    guardarCertificadoJson();
 }
 
 //TODO: Codigo que no se usa

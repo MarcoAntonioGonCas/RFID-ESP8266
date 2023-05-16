@@ -11,130 +11,237 @@
     <header class="header">
         <a href="" class="header-text">RFID</a>
     </header>
-    <div class="container-menu">
-        <nav class="nav nav--collapse">
-            
-            <div class="burger">
-                <div class="line-1"></div>
-                <div class="line-2"></div>
-                <div class="line-3"></div>
-            </div>
+    <nav class="nav nav--collapse">
+        
+        <div class="burger">
+            <div class="line-1"></div>
+            <div class="line-2"></div>
+            <div class="line-3"></div>
+        </div>
 
-            <ul class="nav-items">
-                <li class="nav-item ">
-                    <a href="/home" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/home.svg" alt="imagenInicio">
-                        </div>
-                        <span class="nav-item__text">Inicio</span>
-                    </a>
-                </li>
-                <li class="nav-item nav-item--active">
-                    <a href="/confi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar</span>
-                    </a>
-                </li>
+        <ul class="nav-items">
+            <li class="nav-item ">
+                <a href="/home" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/home.svg" alt="imagenInicio">
+                    </div>
+                    <span class="nav-item__text">Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item nav-item--active">
+                <a href="/confi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Configurar</span>
+                </a>
+            </li>
+
+            
+            <li class="nav-item">
+                <a href="/confiWifi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/wifi-3.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Configurar Wifi</span>
+                </a>
+            </li>
+
+            <li class="nav-item nav-dropdown ">
+                <a  class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Administrar</span>
+                    <div class="row"></div>
+                </a>
+                <ul class="dropdown">
+                    <li class="dropdown__item  ">
+                        <a href="/confiUser" class="dropdown__link">Usuario</a>
+                    </li>
+                    <li class="dropdown__item ">
+                        <a href="/confiRestore" class="dropdown__link">Configuraciones avanzadas</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item ">
+                <a href="/logout" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/log-out.svg" alt="imagenConsalir">
+                    </div>
+                    <span class="nav-item__text">Salir</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main">
+        <div class="container-info">
+            <div class="info-card" id="card-wifi">
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/wifi-off.svg" alt="">
+                    </div>
+                </div>
+                <div class="info-card__description">
+                    WiFi
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %rssi%
+                </label>
+            </div>
+            <div class="info-card" id="card-ap" > 
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/station.svg" alt="">
+                    </div>
+                </div>
+                <div class="info-card__description">
+                    Punto de acceso
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %ap%
+                </label>
+            </div>
+        </div>
+        <form id="frm" method="post" action="/confi">
+            <div class="container-rfid">
+
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%servidor%" name="servidor">
+                    <label for="">Servidor</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%api%" name="api">
+                    <label for="">Ruta api</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%api-registro%" name="apiRegistro">
+                    <label for="">Ruta api registro</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%codigoInter%" name="codigoInter">
+                    <label for="">Codigo intercambio</label>
+                </div>
+
+
+                <div class="textarea-container">
+                    <label for="">Certificado HTTPS</label>
+                    <textarea name="certificado" id="text-certificado" cols="30" rows="10" placeholder=" ">%certificado%</textarea>
+                </div>
+                <div class="inline">
+                    <div class="caption">Baerer</div>
+                    <div class="input-container">
+                        <input type="text" placeholder=" " value="%autorizacion%" name="autorizacion">
+                        <label for="">Autorizacion de api</label>
+                    </div>
+                </div>
 
                 
-                <li class="nav-item">
-                    <a href="/confiWifi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar Wifi</span>
-                    </a>
-                </li>
-
-                <li class="nav-item nav-dropdown ">
-                    <a  class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Administrar</span>
-                        <div class="row"></div>
-                    </a>
-                    <ul class="dropdown">
-                        <li class="dropdown__item  ">
-                            <a href="/confiUser" class="dropdown__link">Usuario</a>
-                        </li>
-                        <li class="dropdown__item ">
-                            <a href="/confiReset" class="dropdown__link">Configuraciones avanzadas</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item ">
-                    <a href="/logout" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/log-out.svg" alt="imagenConsalir">
-                        </div>
-                        <span class="nav-item__text">Salir</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <main class="main">
-            <div class="container-info">
-                <div class="info">
-                    <div id="rssiInfo" class="info-header">%rssi%</div>
-                    <div class="info-main ">
-                        <div class="info-img wifi-info ">
-                            <img src="www/wifi.svg" alt="">
-                        </div>
-                    </div>
-                    <div class="info-footer">
-                        WIFI
-                    </div>
+                <div class="anim-checkbox anim-checkbox--primary" >
+                    <input id="ch" type="checkbox" name="registro" %registro%>
+                    <label for="ch">Modo registro</label>
                 </div>
+
+                    
+                
+                
+                <div class="container-buttons">
+                    <button class="btn btn-success">Guardar</button>
+                    <button class="btn btn-danger" type="reset">Cancelar</button>
+                </div>
+
+                <div class="sep">
+                    <span>Conexion al servidor</span>
+                 </div>       
+
+                 <div class="container-buttons">
+                    <button id="btn-probar-conexion" class="btn btn-dark" type="button">Probar conexion</button>
+                    <div class="container-status" id="estado-servidor">?</div>
+                 </div>
+                 <div class="sep"></div>
             </div>
-            <form method="post" action="/confi">
-                <div class="container-rfid">
+        </form>
 
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%servidor%" name="servidor">
-                        <label for="">Servidor</label>
-                    </div>
+    </main>
 
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%api%" name="api">
-                        <label for="">Ruta api</label>
-                    </div>
-
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%certificado%" name="certificado">
-                        <label for="">Certificado HTTPS</label>
-                    </div>
-                    <div class="inline">
-                        <div class="caption">Baerer</div>
-                        <div class="input-container">
     
-                            <input type="text" placeholder=" " value="%autorizacion%" name="autorizacion">
-                            <label for="">Autorizacion de api</label>
-                        </div>
-                    </div>
-
-                    
-                    <div class="anim-checkbox anim-checkbox--primary" >
-                        <input id="ch" type="checkbox" name="registro" %registro%>
-                        <label for="ch">Modo registro</label>
-                    </div>
-
-                        
-                            
-                    
-                    <div class="container-buttons">
-                        <button class="btn btn-success">Guardar</button>
-                        <button class="btn btn-danger" type="reset">Cancelar</button>
-                    </div>
-                </div>
-            </form>
-        </main>
-    </div>
-
     <script src="www/scriptPrin.js"></script>
+    <script>
+        const frm = document.querySelector("#frm");
+        const txtCertificado = document.querySelector("#text-certificado");
+        
+        function agregarSimLineaNueva( str ="" ){
+            if(str.trim() === "")return "";
+
+            let cadenas = [];
+            let nuevaCadena = "";
+            
+            cadenas = str.trim().split( "\n" );
+            cadenas = cadenas.map(str => {
+                if(str.endsWith("\\n")){
+                    return str;
+                }else{
+                    return `${str}\\n`
+                }
+            })
+            
+            nuevaCadena = cadenas.join( "\n" );
+
+            return nuevaCadena;
+        } 
+        // frm.addEventListener("submit",e=>{
+        //     e.preventDefault();
+        //     txtCertificado.value = agregarSimLineaNueva(txtCertificado.value);
+        //     frm.submit();
+        // })
+
+        // Probar conexion
+        const btnProbar = document.querySelector("#btn-probar-conexion");
+        const divEstadoServidor = document.querySelector("#estado-servidor");
+
+        const muestraEstado = ( {ESTADO,CODIGO} ) => {
+            divEstadoServidor.innerHTML = "";
+            divEstadoServidor.classList.remove("container-status--success");
+            divEstadoServidor.classList.remove("container-status--active");
+            divEstadoServidor.classList.remove("container-status--fail");
+
+            void divEstadoServidor.offsetHeigth;
+
+            divEstadoServidor.animate([
+                { transform: "scale(1)" },
+                { transform: "scale(.5)" },
+                { transform: "scale(1)" }],{
+                    duration:200
+                });
+            if(ESTADO){
+                divEstadoServidor.classList.add("container-status--success");
+                divEstadoServidor.classList.add("container-status--active");
+            }else{
+                divEstadoServidor.classList.add("container-status--fail");
+                divEstadoServidor.classList.add("container-status--active");
+            }
+        }
+
+        
+        
+        const compruebaEstado = () => {
+            if(socket.readyState === WebSocket.OPEN){
+                socket.send("ESTADO");
+            }
+        }
+        const obtieneInfoWS =  (json) =>{
+            const {ESTADOSERVER} = json;
+
+            if(ESTADOSERVER){
+                muestraEstado(ESTADOSERVER);
+            }
+        }
+        metodosJson.push(obtieneInfoWS);
+        btnProbar.addEventListener("click",compruebaEstado);
+    </script>
 </body>
 
 </html>

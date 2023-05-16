@@ -1,21 +1,22 @@
 
 //=============================================================
 // Indica si el ESP se encuentra concectado a una red WI-FI
+// Mostrar mensaje de conexion ESP
 static bool mostrarInfoWifi = true;
 
 bool wifiConectado()
 {
   return WiFi.localIP().isSet();
 }
-//Cambia la el nombre del punto de aceso WIFI
-void conectarAP()
+
+
+/// @brief Habilita o desabilita el AP 
+void iniciarAP()
 {
   WiFi.softAPdisconnect();
   WiFi.enableAP(apHabilitado);
-
   if (!apHabilitado){
-    WiFi.softAPdisconnect();
-    Serial.println("Punto de acceso apagado");
+    Serial.println(F("Punto de acceso apagado"));
     return;
   }
   
@@ -26,7 +27,7 @@ void conectarAP()
   int intentos  = 0; 
   while (!WiFi.softAP(ssidAP, passwordAP) and intentos < 20)
   { 
-    Serial.print(".");
+    Serial.print(F("."));
     delay(200);
     intentos++;
   }
@@ -52,11 +53,33 @@ void conectarWiFi()
 }
 
 
-
+//REGION LOOPS
+// LOOPS
 
 
 void loopAP(){
   
+}
+
+
+//=============================================================
+// Obtiene la hora 
+//=============================================================
+void configurarHora() {
+  configTime(6 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+
+  Serial.println("Sincronizando hora: ");
+  time_t now = time(nullptr);
+  while (now < 8 * 3600 * 2) {
+      delay(500);
+      Serial.print(".");
+      now = time(nullptr);
+  }
+  Serial.println("");
+  struct tm timeinfo;
+  gmtime_r(&now, &timeinfo);
+  Serial.print("Tiempo actua: ");
+  Serial.println(asctime(&timeinfo));
 }
 
 //=============================================================
@@ -76,8 +99,9 @@ void loopWiFi()
     ledWIFI.prender();
     if (mostrarInfoWifi)
     {
-      Serial.printf("Conectado a WIFI %s con ip: %s", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+      Serial.printf("Conectado a WIFI %s con ip: %s \n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
       mostrarInfoWifi = false;
+      configurarHora();
     }
   }
 }
@@ -90,6 +114,6 @@ void configAPWIFI()
 {
   
   WiFi.mode(WiFiMode::WIFI_AP_STA);
-  WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
+  WiFi.softAPConfig(apIp, IPAddress(192,168,0,254), IPAddress(255, 255, 255, 0));
   WiFi.setAutoReconnect(true);
 }

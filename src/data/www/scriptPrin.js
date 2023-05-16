@@ -1,28 +1,88 @@
 const url = window.location.origin;
 //Ruta en donde esta ubicada nuestro servidor websock;
 const urlWebsocket = `ws://${window.location.hostname}/ws`;
-
+// const urlWebsocket = `ws://192.168.0.107/ws`;
 let socket;
 //Metodo que contiene todos las operaciones con los sockets ademas de
 //abrir la conexion
-const reciveInfoWebsocket = (datos) => {
-  let json = JSON.parse(datos);
-  if (json) {
-    if (json.WiFi) {
-      const { CONECTADO, NOMBRE, RSSI } = json.WiFi;
+const metodosJson = [];
+const cardWifi = document.querySelector("#card-wifi");
+const labelWifi = cardWifi.querySelector("label")
+const imgWifi = cardWifi.querySelector("img");
 
-      if (CONECTADO) {
-        document.querySelector(".wifi-info").classList.add("wifi-info--active");
-        document.querySelector("#rssiInfo").innerHTML = RSSI;
-      } else {
-        document.querySelector("#rssiInfo").innerHTML = "Desconectado";
-        document
-          .querySelector(".wifi-info")
-          .classList.remove("wifi-info--active");
-      }
-    }
+const limpiarClasesWifi = (element) =>{
+  element.classList.remove("label-danger");
+  element.classList.remove("label-info");
+  element.classList.remove("label-success");
+  element.classList.remove("label-danger");
+}
+
+const obtenerClaseWifi = (senial) =>{
+  if(senial == 0){
+    return "label-danger"
+  }else if(senial == 1){
+    return "label-info"
+  }else if(senial == 2 || senial == 3){
+    return "label-success"
+  }else{
+    return "label-danger"
   }
+}
+
+const reciveInfoWsWifi = (json) => {
+  const {WiFi,ESP} = json;
+  if (!WiFi)return; 
+
+  const { CONECTADO, NOMBRE, RSSI } = WiFi;
+  
+  if (CONECTADO) {
+
+    const senial = Math.ceil( map(RSSI,-40,-80,0,3));
+    
+    const clase = obtenerClaseWifi(senial);
+    cardWifi.querySelector(".item-status").classList.add("item-status--active");
+    
+    labelWifi.innerHTML = RSSI;
+    limpiarClasesWifi(labelWifi);
+    labelWifi.classList.add(clase);
+
+    if(imgWifi.src != `www/wifi-${senial}.svg`){
+      imgWifi.src = `www/wifi-${senial}.svg`
+    }
+
+
+
+  } else {
+    labelWifi.innerHTML = "Desconectado";
+    cardWifi.querySelector(".item-status").classList.remove("item-status--active");
+    labelWifi.classList.add("label-danger");
+  }
+  
+
 };
+
+// Punto de acceso
+const cardAp = document.querySelector("#card-ap");
+const labelAP = cardAp.querySelector("label")
+
+const reciveInfoWsAp = (json) =>{
+  const {AP} = json;
+  if(!AP)return;
+
+  const {HABI,CLIEN} = AP;
+
+
+  if(HABI){
+    cardAp.querySelector(".item-status").classList.add("item-status--active");
+    labelAP.innerHTML = `conectados: ${CLIEN}`
+  }else{
+    
+    cardAp.querySelector(".item-status").classList.remove("item-status--active");
+  }
+  
+}
+
+
 
 const conectarSocket = () => {
   socket = new WebSocket(urlWebsocket);
@@ -45,7 +105,14 @@ const conectarSocket = () => {
     socket.close();
   }
   function onMessage(e) {
-    reciveInfoWebsocket(e.data);
+
+    const json = JSON.parse(e.data);
+
+    if(!json)return;
+
+    metodosJson.forEach(metodo =>{
+      metodo(json);
+    })
   }
 
   socket.onopen = onOpen;
@@ -55,7 +122,7 @@ const conectarSocket = () => {
 };
 
 conectarSocket();
-
+metodosJson.push(reciveInfoWsWifi,reciveInfoWsAp);
 //Parte de codigo que indica si se debe mostrar o cultar el menu
 //desplegable esto haciendo click en la hamburguesa
 const burger = document.querySelector(".burger");
@@ -119,22 +186,23 @@ buttonsOpenModals.forEach((button) => {
     document.body.classList.add("overflow-hidden");
   });
 });
-modales.forEach((modal) => {
-  const modalClose = modal.querySelector("[data-close='modal']");
-  if (!modalClose) return;
 
-  modalClose.addEventListener("click", () => {
-    modal.classList.remove("modal--active");
+
+modales.forEach((modal) => {
+  modal.addEventListener("click",e=>{
+    const {dataset } = e.target;
+    if(dataset.close == "modal"){
+      modal.classList.remove("modal--active");
     document.body.classList.remove("overflow-hidden");
-  });
+    }
+  })
 });
 
-//Passwoed button
 
+// Boton contraseña
 const containerPassword = document.querySelectorAll(".input-password");
 
 containerPassword.forEach((container) => {
-  console.log(container);
   const btn = container.querySelector("[data-toogle]");
   const input = container.querySelector(btn.dataset.toogle);
   btn.addEventListener("click", () => {
@@ -149,7 +217,7 @@ containerPassword.forEach((container) => {
 });
 
 
-
+//TODO: Metodo para enviar datos
 const sendData = (selectorFrm) =>{
   const frm = document.querySelector(selectorFrm);
   if(!frm)return;
@@ -192,3 +260,11 @@ const sendData = (selectorFrm) =>{
 }
 
 // sendData("#frm");
+
+
+
+// Helpers
+
+function map(value,valueMin,valueMax,newValueMin,newValueMax){
+  return  ( value - valueMin) * (newValueMax - newValueMin) / (valueMax - valueMin) + newValueMin
+}

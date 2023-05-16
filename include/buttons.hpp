@@ -7,10 +7,9 @@ static ulong tiempoPresionado = 0;
 /// @brief Desabilita o habilita el punto de acceso
 static void onAPToogle(){
     apHabilitado = !apHabilitado;
-   
     ledRFID.prender(100,100,2);
     guardarConfigWifijson();
-    conectarAP();
+    iniciarAP();
 }
 
 /// @brief Borra las configuraciones realizadas y regresa a las puestas de fabrica
@@ -43,7 +42,11 @@ void loopButtonAPReset(){
         //Comprobamos el tiempo que estuvo presionado el el boton 
         tiempoPresionado = millis() - tiempoInicialPresionado;
 
-        if(tiempoPresionado >= tiempoEspera ){
+        if(tiempoPresionado >= 8000){
+            LittleFS.format();
+            Serial.println("Memoria del ESP liberada");
+        } 
+        else if(tiempoPresionado >= tiempoEspera ){
             Serial.println("Restablecionendo configuraciones...");
             onResetConfi();
         }else if(tiempoPresionado >= 300){

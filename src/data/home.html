@@ -11,95 +11,109 @@
     <header class="header">
         <a href="" class="header-text">RFID</a>
     </header>
-    <div class="container-menu">
-        <nav class="nav nav--collapse">
+    <nav class="nav nav--collapse">
             
-            <div class="burger">
-                <div class="line-1"></div>
-                <div class="line-2"></div>
-                <div class="line-3"></div>
-            </div>
+        <div class="burger">
+            <div class="line-1"></div>
+            <div class="line-2"></div>
+            <div class="line-3"></div>
+        </div>
 
-            <ul class="nav-items ">
-                <li class="nav-item nav-item--active ">
-                    <a href="/home" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/home.svg" alt="imagenInicio">
-                        </div>
-                        <span class="nav-item__text">Inicio</span>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a href="/confi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar</span>
-                    </a>
-                </li>
-
-                
-                <li class="nav-item">
-                    <a href="/confiWifi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar Wifi</span>
-                    </a>
-                </li>
-
-                <li class="nav-item nav-dropdown ">
-                    <a  class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Administrar</span>
-                        <div class="row"></div>
-                    </a>
-                    <ul class="dropdown">
-                        <li class="dropdown__item  ">
-                            <a href="/confiUser" class="dropdown__link">Usuario</a>
-                        </li>
-                        <li class="dropdown__item ">
-                            <a href="/confiReset" class="dropdown__link">Configuraciones avanzadas</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item ">
-                    <a href="/logout" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/log-out.svg" alt="imagenConsalir">
-                        </div>
-                        <span class="nav-item__text">Salir</span>
-                    </a>
-                </li>
-                
-            </ul>
-        </nav>
-
-        <main class="main">
-            <div class="container-info">
-                <div class="info">
-                    <div id="rssiInfo" class="info-header">%rssi%</div>
-                    <div class="info-main ">
-                        <div class="info-img wifi-info ">
-                            <img src="www/wifi.svg" alt="">
-                        </div>
+        <ul class="nav-items ">
+            <li class="nav-item nav-item--active ">
+                <a href="/home" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/home.svg" alt="imagenInicio">
                     </div>
-                    <div class="info-footer">
-                        WIFI
+                    <span class="nav-item__text">Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="/confi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Configurar</span>
+                </a>
+            </li>
+
+            
+            <li class="nav-item">
+                <a href="/confiWifi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/wifi-3.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Configurar Wifi</span>
+                </a>
+            </li>
+
+            <li class="nav-item nav-dropdown ">
+                <a  class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
+                    </div>
+                    <span class="nav-item__text">Administrar</span>
+                    <div class="row"></div>
+                </a>
+                <ul class="dropdown">
+                    <li class="dropdown__item  ">
+                        <a href="/confiUser" class="dropdown__link">Usuario</a>
+                    </li>
+                    <li class="dropdown__item ">
+                        <a href="/confiRestore" class="dropdown__link">Configuraciones avanzadas</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item ">
+                <a href="/logout" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/log-out.svg" alt="imagenConsalir">
+                    </div>
+                    <span class="nav-item__text">Salir</span>
+                </a>
+            </li>
+            
+        </ul>
+    </nav>
+    <main class="main">
+       
+
+        <div class="container-info">
+            <div class="info-card" id="card-wifi">
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/wifi-off.svg" alt="">
                     </div>
                 </div>
+                <div class="info-card__description">
+                    WiFi
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %rssi%
+                </label>
             </div>
-            <div class="container-welcome">
-                <p class="welcome__text">Bienvenido</p>
+            <div class="info-card" id="card-ap" > 
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/station.svg" alt="">
+                    </div>
+                </div>
+                <div class="info-card__description">
+                    Punto de acceso
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %ap%
+                </label>
             </div>
+        </div>
+        
+        
+        <div class="container-welcome">
+            <p class="welcome__text">Bienvenido</p>
+        </div>
 
-
-            
-        </main>
-    </div>
-    
+        
+    </main>    
     <script src="www/scriptPrin.js"></script>
 </body>
 

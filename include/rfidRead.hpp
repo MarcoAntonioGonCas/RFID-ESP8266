@@ -1,8 +1,13 @@
+//-----------------------------------------------
+// Este objeto es en donde indicaremos en que pines esta conectado nuestro
+// Rfid el igual
+//-----------------------------------------------
 MFRC522 rfid(pinCSRfid, pinRSRfid);
 
 
-//=============================================================
+//---------------------------------------------------------------
 //Indica si se encuentra disponible una tarjeta cerca del sensor
+//---------------------------------------------------------------
 bool tarjetaDisponible(MFRC522& rfid)
 {
   if (rfid.PICC_IsNewCardPresent())
@@ -15,8 +20,10 @@ bool tarjetaDisponible(MFRC522& rfid)
   return false;
 }
 
-//=============================================================
+
+//---------------------------------------------------------------
 //Lee el UUID de la tarjeta que se encuentra en el sensor
+//---------------------------------------------------------------
 String leerTarjeta(MFRC522& rfid)
 {
   String strId = "";
@@ -33,15 +40,18 @@ String leerTarjeta(MFRC522& rfid)
   return strId;
 }
 
-//=============================================================
+
+//----------------------------------------------------------------
 //Loop que se ejecutara en la funcion principal
+//---------------------------------------------------------------
 void loopRfid(){
   
   if (tarjetaDisponible(rfid))
   {
     ledRFID.prender(100, 50, 4);
     String strId = leerTarjeta(rfid);
-    enviarPostApi(strId);
+    Serial.println("Tarjeta detectada");
     Serial.println(strId);
+    enviarPostApi(strId);
   }
 }

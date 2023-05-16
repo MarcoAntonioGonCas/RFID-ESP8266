@@ -11,183 +11,180 @@
     <header class="header">
         <a href="" class="header-text">RFID</a>
     </header>
-    <div class="container-menu">
-        <nav class="nav nav--collapse">
-            
-            <div class="burger">
-                <div class="line-1"></div>
-                <div class="line-2"></div>
-                <div class="line-3"></div>
-            </div>
-
-            <ul class="nav-items">
-                <li class="nav-item ">
-                    <a href="/home" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/home.svg" alt="imagenInicio">
-                        </div>
-                        <span class="nav-item__text">Inicio</span>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a href="/confi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar</span>
-                    </a>
-                </li>
-
-                
-                <li class="nav-item nav-item--active">
-                    <a href="/confiWifi" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/wifi.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Configurar Wifi</span>
-                    </a>
-                </li>
-
-                <li class="nav-item nav-dropdown ">
-                    <a  class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/configure.svg" alt="imagenConfigurarWifi">
-                        </div>
-                        <span class="nav-item__text">Administrar</span>
-                        <div class="row"></div>
-                    </a>
-                    <ul class="dropdown">
-                        <li class="dropdown__item  ">
-                            <a href="/confiUser" class="dropdown__link">Usuario</a>
-                        </li>
-                        <li class="dropdown__item ">
-                            <a href="/confiReset" class="dropdown__link">Configuraciones avanzadas</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item ">
-                    <a href="/logout" class="nav-item__link">
-                        <div class="container-img">
-                            <img src="www/log-out.svg" alt="imagenConsalir">
-                        </div>
-                        <span class="nav-item__text">Salir</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <main class="main">
-            <div class="container-info">
-                <div class="info">
-                    <div id="rssiInfo" class="info-header">%rssi%</div>
-                    <div class="info-main">
-                        <div class="info-img wifi-info">
-                            <img src="www/wifi.svg" alt="" />
-                        </div>
+    <nav class="nav nav--collapse">
+        <div class="burger">
+            <div class="line-1"></div>
+            <div class="line-2"></div>
+            <div class="line-3"></div>
+        </div>
+        <ul class="nav-items">
+            <li class="nav-item ">
+                <a href="/home" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/home.svg" alt="imagenInicio">
                     </div>
-                    <div class="info-footer">WIFI</div>
-                </div>
-            </div>
-            <form method="post" action="/confiWifi" id="frm">
-                <div class="container-rfid">
-                    <div class="fill">
-                        <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">
-                            <span>Buscar</span>
-                            <img src="www/search.svg" alt="" />
-                        </button>
+                    <span class="nav-item__text">Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="/confi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
                     </div>
-                    
-                    <!-- WIFI -->
-                    <p class="sep">
-                        <span>WIFI</span>
-                    </p>
-                    <div class="input-container">
-                        <input id="txtNombreRed" type="text" placeholder=" " value="%nombre%" name="nombre" />
-                        <label for="">Nombre de red</label>
+                    <span class="nav-item__text">Configurar</span>
+                </a>
+            </li>
+            <li class="nav-item nav-item--active">
+                <a href="/confiWifi" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/wifi-3.svg" alt="imagenConfigurarWifi">
                     </div>
-
-                    <div class="input-container">
-                        <input id="txtContraRed" type="text" placeholder=" " value="%contra%" name="contra" />
-                        <label for="">Contraseña</label>
+                    <span class="nav-item__text">Configurar Wifi</span>
+                </a>
+            </li>
+            <li class="nav-item nav-dropdown ">
+                <a  class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/configure.svg" alt="imagenConfigurarWifi">
                     </div>
-
-                    <!-- Proxy -->
-                    <div class="sep">
-                        <span>Proxy</span>
+                    <span class="nav-item__text">Administrar</span>
+                    <div class="row"></div>
+                </a>
+                <ul class="dropdown">
+                    <li class="dropdown__item  ">
+                        <a href="/confiUser" class="dropdown__link">Usuario</a>
+                    </li>
+                    <li class="dropdown__item ">
+                        <a href="/confiRestore" class="dropdown__link">Configuraciones avanzadas</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item ">
+                <a href="/logout" class="nav-item__link">
+                    <div class="container-img">
+                        <img src="www/log-out.svg" alt="imagenConsalir">
                     </div>
-                    
-                        <div class="anim-checkbox anim-checkbox--sucess" >
-                            <input id="proxy-habilitado" type="checkbox" name="proxyHabi" %HabiProxy% >
-
-                            <label for="proxy-habilitado">Habilitar proxy</label>
-                        </div>
-                        <div class="input-container">
-                            <input id="proxy" type="text" placeholder=" " value="%proxy%" name="proxy" />
-                            <label for="">Proxy</label>
-                        </div>
-                        <div class="input-container">
-                            <input id="puerto" maxlength="20" type="number" placeholder=" " value="%puerto%"
-                                name="puerto" />
-                            <label for="">Puerto</label>
-                        </div>
-                    
-                    <!-- Punto de acceso -->
-                    <p class="sep">
-                        <span>Punto de acceso</span>
-                    </p>
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%nombreAP%" name="nombreAP" />
-                        <label for="">Nombre punto de acceso</label>
-                    </div>
-                    <div class="input-container">
-                        <input type="text" placeholder=" " value="%contraAP%" name="contraAP" />
-                        <label for="">Contraseña punto de acceso</label>
-                    </div>
-                    <div class="anim-checkbox anim-checkbox--success" >
-                        <input id="ap-habilitado" type="checkbox" name="APHabilitado" %APHabilitado% >
-
-                        <label for="ap-habilitado">Habilitar punto de acceso</label>
-                    </div>
-                    
-                    <div class="container-buttons">
-                        <button class="btn btn-success">Guardar</button>
-                        <button class="btn btn-danger" type="reset">Cancelar</button>
+                    <span class="nav-item__text">Salir</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <main class="main">
+        <div class="container-info">
+            <div class="info-card" id="card-wifi">
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/wifi-off.svg" alt="">
                     </div>
                 </div>
-            </form>
-
-            <div class="modal" id="modalWifi">
-                <div class="modal-close" data-close="modal"></div>
-                <div class="container-redes">
-                    <table class="table">
-                        <thead class="table-header">
-                            <th>Id</th>
-                            <th>Nombre</th>
-                            <th>Dirección física</th>
-                            <th>Señal</th>
-                            <th>Seguridad</th>
-                            <th>Canal</th>
-                            <th></th>
-                        </thead>
-                        <tbody class="table-body" id="container-redes">
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                    <button type="button" class="btn btn-search" id="btnBuscarRedes">
+                <div class="info-card__description">
+                    WiFi
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %rssi%
+                </label>
+            </div>
+            <div class="info-card" id="card-ap" > 
+                <div class="info-card__img">
+                    <div class="item-status ">
+                        <img src="www/station.svg" alt="">
+                    </div>
+                </div>
+                <div class="info-card__description">
+                    Punto de acceso
+                </div>
+                <label for="" class="info-card__label label-info">
+                    %ap%
+                </label>
+            </div>
+        </div>
+        <form method="post" action="/confiWifi" id="frm">
+            <div class="container-rfid">
+                <div class="fill">
+                    <button class="btn btn-search" type="button" data-toogle="modal" data-target="#modalWifi">
                         <span>Buscar</span>
+                        <img src="www/search.svg" alt="" />
                     </button>
                 </div>
-            </div>
+                <p class="sep">
+                    <span>WIFI</span>
+                </p>
+                <div class="input-container">
+                    <input id="txtNombreRed" type="text" placeholder=" " value="%nombre%" name="nombre" />
+                    <label for="">Nombre de red</label>
+                </div>
+                <div class="input-container">
+                    <input id="txtContraRed" type="text" placeholder=" " value="%contra%" name="contra" />
+                    <label for="">Contraseña</label>
+                </div>
+                <div class="sep">
+                    <span>Proxy</span>
+                </div>
+                    <div class="anim-checkbox anim-checkbox--sucess" >
+                        <input id="proxy-habilitado" type="checkbox" name="proxyHabi" %HabiProxy% >
 
-            <div class="modal" id="modalSave">
-                <div class="modal-close" data-close="modal"></div>
-                <div class="container-save">
-                    <p>Guardando cambios espera por favor</p>
-                    <span></span>
+                        <label for="proxy-habilitado">Habilitar proxy</label>
+                    </div>
+                    <div class="input-container">
+                        <input id="proxy" type="text" placeholder=" " value="%proxy%" name="proxy" />
+                        <label for="">Proxy</label>
+                    </div>
+                    <div class="input-container">
+                        <input id="puerto" maxlength="20" type="number" placeholder=" " value="%puerto%"
+                            name="puerto" />
+                        <label for="">Puerto</label>
+                    </div>
+                <p class="sep">
+                    <span>Punto de acceso</span>
+                </p>
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%nombreAP%" name="nombreAP" />
+                    <label for="">Nombre punto de acceso</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder=" " value="%contraAP%" name="contraAP" />
+                    <label for="">Contraseña punto de acceso</label>
+                </div>
+                <div class="anim-checkbox anim-checkbox--success" >
+                    <input id="ap-habilitado" type="checkbox" name="APHabilitado" %APHabilitado% >
+                    <label for="ap-habilitado">Habilitar punto de acceso</label>
+                </div>
+                <div class="container-buttons">
+                    <button class="btn btn-success">Guardar</button>
+                    <button class="btn btn-danger" type="reset">Cancelar</button>
                 </div>
             </div>
-        </main>
-    </div>
-
+        </form>
+        <div class="modal" id="modalWifi">
+            <div class="modal-close" data-close="modal"></div>
+            <div class="container-redes">
+                <table class="table">
+                    <thead class="table-header">
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Dirección física</th>
+                        <th>Señal</th>
+                        <th>Seguridad</th>
+                        <th>Canal</th>
+                        <th></th>
+                    </thead>
+                    <tbody class="table-body" id="container-redes">
+                        <tr></tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-search" id="btnBuscarRedes">
+                    <span>Buscar</span>
+                </button>
+            </div>
+        </div>
+        <div class="modal" id="modalSave">
+            <div class="modal-close" data-close="modal"></div>
+            <div class="container-save">
+                <p>Guardando cambios espera por favor</p>
+                <span></span>
+            </div>
+        </div>
+    </main>
     <script src="www/scriptPrin.js"></script>
     <script src="www/scriptConWifi.js"></script>
 </body>
