@@ -2,7 +2,7 @@
 // Este objeto es en donde indicaremos en que pines esta conectado nuestro
 // Rfid el igual
 //-----------------------------------------------
-MFRC522 rfid(pinCSRfid, pinRSRfid);
+MFRC522 rfid(pinCSfid, pinRSTfid);
 
 
 //---------------------------------------------------------------
@@ -29,14 +29,18 @@ String leerTarjeta(MFRC522& rfid)
   String strId = "";
   for (int i = 0; i < rfid.uid.size; i++)
   {
-    if(i !=0 ){
-      strId += ( rfid.uid.uidByte[i] < 0x10 ? "0" : " " );
-    }else if(i == 0 and rfid.uid.uidByte[i] < 0x10){
-      strId += "0";
+    if(rfid.uid.uidByte[i] < 0x10){
+      strId+="0";
     }
     strId += String(rfid.uid.uidByte[i], HEX);
+
+    if(i + 1 < rfid.uid.size ){
+      strId += "-";
+      
+    }
   }
   rfid.PICC_HaltA();
+  strId.toUpperCase();
   return strId;
 }
 
@@ -48,7 +52,8 @@ void loopRfid(){
   
   if (tarjetaDisponible(rfid))
   {
-    ledRFID.prender(100, 50, 4);
+    ledRFID.prender(100, 50, 5);
+    ledAcceso.prender(400);
     String strId = leerTarjeta(rfid);
     Serial.println("Tarjeta detectada");
     Serial.println(strId);

@@ -29,6 +29,7 @@ DNSServer dnsServer;
 
 ledLibClass ledRFID;
 ledLibClass ledWIFI;
+ledLibClass ledAcceso;
 
 bool enviarEstado = false;
 //-----------------------------------------------
@@ -43,7 +44,7 @@ bool enviarEstado = false;
 // punto de acceso 
 //=============================================================
 void iniciarWIFIAP(){
-  
+
   delayMicroseconds(100);
    
   configAPWIFI();
@@ -73,6 +74,7 @@ void iniciarServerYDNS()
   iniciarSocket();
   asyncServer.begin();
   //----------------------------
+  
 }
 
 
@@ -83,6 +85,7 @@ void iniciarLeds()
 {
   ledRFID.begin(pinLedInfoRfid, TipoLed::Catodo);
   ledWIFI.begin(pinLedWIFI, TipoLed::Anodo);
+  ledAcceso.begin(pinLedEstadoAcceso,TipoLed::Anodo);
 }
 
 //=============================================================
@@ -136,7 +139,7 @@ void setup()
   Serial.begin(9600);
   SPI.begin();
   rfid.PCD_Init();
-  WiFi.persistent(false);
+  
   iniciaTodo();
 }
 
@@ -147,7 +150,7 @@ void loop()
 {
   
   if(enviarEstado){
-    enviaSocket();
+    enviaEatadoServidorSocket();
     delayMicroseconds(100);
     enviarEstado = false;
   }
@@ -155,8 +158,12 @@ void loop()
   
   loopRestart();
   dnsServer.processNextRequest();
+
+
   ledWIFI.loop();
   ledRFID.loop();
+  ledAcceso.loop();
+
 
   //Lops
   loopWiFi();

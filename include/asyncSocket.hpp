@@ -86,20 +86,17 @@ void ProcessRequest(AsyncWebSocketClient *client, String mensaje)
    
    Serial.println("Mensaje recibido de cliente websocket: " + mensaje);
 
-
    if (mensaje == "ESTADO")
    {
       enviarEstado = true;
-
    }
 }
-void enviaSocket(){
+void enviaEatadoServidorSocket(){
       JsonObject ob = jsonWS.createNestedObject("ESTADOSERVER");
       int res = probarConexionServidor();
       ob["ESTADO"] = res > 0;
       ob["CODIGO"] = res;
       serializeJson(jsonWS,jsonStrWS);
-      delay(2000);
       asyncSocket.textAll(jsonStrWS);
       jsonStr.clear();
       jsonStrWS.clear();
@@ -141,6 +138,8 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
       Serial.println(String(info->message_opcode));
 
       String msg = "";
+
+
       if(info->opcode  == WS_TEXT){
          Serial.println("Estoy recibiendo texto");
       }else if(info->opcode  == WS_BINARY){
@@ -209,7 +208,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 
 
 void loopSocket(){
-   if(interrumpirSocked)return;
+ if(interrumpirSocked) return;
   enviarInfoWs(2000, asyncSocket);
   comprobarClientesWs(1000, asyncSocket);
 }

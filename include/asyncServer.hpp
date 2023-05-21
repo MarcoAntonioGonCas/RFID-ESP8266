@@ -102,7 +102,7 @@ void handleConfiUserPost(AsyncWebServerRequest *req){
       pContra.trim();
       pUsuario.trim();
 
-      if(!pUsuario.isEmpty() and !pContra.isEmpty() ){
+      if(pUsuario.length() > 2 and  pContra.length() > 2){
          usuarioLogin = pUsuario;
          contraLogin = pContra;
          guardarConfigUserJson();
@@ -136,6 +136,8 @@ String processorConfigGet(const String& var)
    return certificadoHttps;
   }else if(var == "registro"){
    return modoRegistro ? "checked":"";
+  }else if(var == "salon"){
+   return salon;
   }
   return String();
 }
@@ -153,16 +155,6 @@ void handleConfiGet(AsyncWebServerRequest *req)
    }
 
    File f = LittleFS.open("/confi.html", "r");
-   // String doc = f.readString();
-
-
-   // doc.replace("%rssi%",String(WiFi.RSSI()));
-   // doc.replace("%servidor%", serverIp);
-   // doc.replace("%api%", rutaApi);
-   // doc.replace("api-registro",rutaApiRegistro);
-   // doc.replace("%autorizacion%",token);
-   // doc.replace("%certificado%",certificadoHttps);
-   // doc.replace("%registro%",modoRegistro ? "checked":"");
 
    req->send(LittleFS,"/confi.html", "text/html",false, processorConfigGet);
 }
@@ -182,7 +174,7 @@ void handleConfiPost(AsyncWebServerRequest *req)
    String pAutorizacion = "";
    String pCertificado = "";
    String pCodigoInter = "";
-
+   String pSalon = "";
    bool nuevaConfiguracion = false;
    bool pModoRegistro = false;
    bool nuevaAutorizacion = false;
@@ -191,6 +183,7 @@ void handleConfiPost(AsyncWebServerRequest *req)
    nuevaConfiguracion = obtenerValorYComparar(req,"api",pRuta,rutaApi) ? true : nuevaConfiguracion;
    nuevaConfiguracion = obtenerValorYComparar(req,"apiRegistro",pRutaRegistro,rutaApiRegistro) ? true : nuevaConfiguracion;
    nuevaConfiguracion = obtenerValorYComparar(req,"codigoInter",pCodigoInter,codigoIntercambio) ? true : nuevaConfiguracion;
+   nuevaAutorizacion = obtenerValorYComparar(req,"salon",pSalon,salon) ? true:nuevaAutorizacion;
    nuevaConfiguracion = obtenerValorYComparar(req,"certificado",pCertificado,certificadoHttps,true) ? true : nuevaConfiguracion;
 
    nuevaAutorizacion = obtenerValorYComparar(req,"autorizacion",pAutorizacion,token);
@@ -257,21 +250,7 @@ void handleWifiConfigGet(AsyncWebServerRequest *req){
    }
 
    File f = LittleFS.open("/confiWifi.html", "r");
-   // String doc = f.readString();
 
-
-   // doc.replace("%nombre%", ssid);
-   // doc.replace("%contra%", password);
-   // doc.replace("%HabiProxy%", proxyHabilitado ? "checked":"");
-   // doc.replace("%proxy%", proxy.isSet() ? proxy.toString():"");
-   // doc.replace("%puerto%", String(puerto));
-   // doc.replace("%nombreAP%", ssidAP);
-   // doc.replace("%contraAP%", passwordAP);
-   // doc.replace("%APHabilitado%", apHabilitado ? "checked":"");
-   // doc.replace("%rssi%", String(WiFi.RSSI()));
-
-   //*************************************************************************   
-   // AsyncWebServerResponse *response = req->beginResponse(200,"text/html",doc);
   
    AsyncWebServerResponse *response = req->beginResponse(LittleFS,"/confiWifi.html","text/html",false, processorWifiConfigGet);
    response->addHeader("Access-Control-Allow-Origin", "*");
@@ -283,10 +262,7 @@ void handleWifiConfigGet(AsyncWebServerRequest *req){
 // -------------------------------------------------------------------
 bool postProxyAux(AsyncWebServerRequest *req){
 
-   //#proxy
-   //proxyHabi - opcional
-   //proxy - requerido
-   //puerto - requerido
+
    bool cambio = false;
    proxyHabilitado = req->hasParam("proxyHabi",true);
 

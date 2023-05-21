@@ -17,12 +17,12 @@ int puerto = 0;
 // Ruta del servidor
 //=====================================================
 String serverIp = "http://192.168.0.104:44355";
-String rutaApi = "/api/ident/";
-String rutaApiRegistro = "/api/registro/";
+String rutaApi = "/api/AccesoRfid/";
+String rutaApiRegistro = "/api/RegistroRfid/";
 
 String certificadoHttps = "";
 String codigoIntercambio = "";
-
+String salon = "";
 
 bool modoRegistro = false;
 
@@ -48,5 +48,5 @@ String contraLogin = "admin";
 //Token para realizar la peticion http a webserver IIS ASP
 String token = "api123";
 
-
+//
 bool interrumpirSocked = false;

@@ -1,12 +1,10 @@
 // Documento json que contendra informacion para solicitudes htpp
-StaticJsonDocument<48> json;
+StaticJsonDocument<350> json;
 String jsonStr;
 
 
-
-
 //Cliente htpp para realizar solicituedes http al servidor
-//Correcion de error
+//Declarado globalmente para evitar saturacion de memoria 
 HTTPClient http;
 WiFiClient cli;
 WiFiClientSecure *cliHttps = new WiFiClientSecure();
@@ -63,6 +61,8 @@ int probarConexionServidor(){
 
    //TODO: Verificar si funciona el proxy
    if(proxyHabilitado) cli->connect(proxy.toString(),puerto);
+
+
    if(http.begin(*cli,serverIp)){
          addHeader(http);
          Serial.println("Realizando peticion get server 2");
@@ -88,26 +88,89 @@ int probarConexionServidor(){
 
 }
 
+
+
+
+
+/// @brief Procesa la respuesta de un registro mandado
+void procesarRespuestaRegistro(){
+
+}
+
+
+//Enumeracion del tipo de asistencia recibida por el servidor
+enum class TipoAsistencia:short{
+   Salida,
+   Entrada,
+   Ninguna,
+   NoRegistrado
+};
+
+//Convierto un tipo short a una enumeracion de TipoAsistencia 
+TipoAsistencia ConvertirATipoAsistencia(short valor){
+
+   return static_cast<TipoAsistencia>(valor);
+}
+
+/// @brief Procesa la respuesta de un acceso
+void procesarRespuestaAcceso(JsonObject& json ){
+   Serial.println("Respuesta");
+
+   if(!json.containsKey("OK") and !json.containsKey("TipoAsistencia")){
+      return;
+   }
+   TipoAsistencia tipo = ConvertirATipoAsistencia(json["TipoAsistencia"].as<short>());
+   bool ok = json["OK"].as<bool>();
+   if(!ok) return;
+
+
+   if(tipo == TipoAsistencia::Entrada){
+      ledAcceso.prender(200);
+   }else if(tipo == TipoAsistencia::Salida){
+      ledAcceso.prender(100,50,3);
+   }else if(tipo == TipoAsistencia::NoRegistrado){
+
+   }
+
+
+
+   serializeJsonPretty(json,Serial);
+
+
+}
+
+
 //===================================================================
 // Realiza una peticion POST a nuestra api
 // Utiliza la ruta de la Api configurada en archivos de configuracion
 //===================================================================
 void enviarPostApi(String &uuid)
 {
-   if(!wifiClientConfigurado)configurarClienteHttp();
-   if (WiFi.status() != WL_CONNECTED)
+   if (!wifiConectado())
    {
       Serial.println("Wifi no conectado");
       return;
    }
+
+   if(!wifiClientConfigurado) configurarClienteHttp();
    
-   json["uuid"] = uuid;
+   json["codigoTarjeta"] = uuid;
+   json["codigoIntercambio"] = codigoIntercambio;
+   json["salon"] = salon;
+
+   serializeJsonPretty(json,Serial);
    serializeJson(json, jsonStr);
 
    WiFiClient* cli = ObtenerClienteWifi();
-   Serial.println("Enviando peticion POST Tarjeta detectada");
-
-   if(http.begin(*cli,(serverIp + modoRegistro ? rutaApiRegistro:rutaApi))){
+   String url = "";
+   if(modoRegistro){
+      url = serverIp + rutaApiRegistro; 
+   }else{
+      url = serverIp + rutaApi; 
+   }
+   
+   Serial.println("Enviando peticion POST Tarjeta detectada a: "+url);
+   http.begin(*cli,url);
       
       addHeader(http);
       http.addHeader("Connection", "keep-alive");
@@ -118,6 +181,19 @@ void enviarPostApi(String &uuid)
       if (code > 0)
       {
          Serial.println(F("Peticion realizada con exito"));
+         if(modoRegistro){
+            procesarRespuestaRegistro();
+         }else{
+            json.clear();
+            jsonStr.clear();
+            jsonStr = http.getString();
+
+
+            deserializeJson(json,jsonStr);
+
+            JsonObject obj = json.as<JsonObject>();
+            procesarRespuestaAcceso(obj);
+         }
       }
       else
       {
@@ -130,6 +206,6 @@ void enviarPostApi(String &uuid)
       cli->flush();
       json.clear();
       jsonStr.clear();
-   }  
+   
    
 }

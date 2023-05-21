@@ -125,7 +125,16 @@
                     <input type="text" placeholder=" " value="%codigoInter%" name="codigoInter">
                     <label for="">Codigo intercambio</label>
                 </div>
+                <div>
+                    <div class="input-container input-search">
+                        <input name="salon" type="text" placeholder=" " value="%salon%">
+                        <label for="">Salon</label>
+                        <div id="resultado-salones">
 
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-obtener-salones">Obtener</button>
+                </div>
 
                 <div class="textarea-container">
                     <label for="">Certificado HTTPS</label>
@@ -241,6 +250,29 @@
         }
         metodosJson.push(obtieneInfoWS);
         btnProbar.addEventListener("click",compruebaEstado);
+    </script>
+
+    <script>
+
+
+        const btnObtenerSalones = document.querySelector("#btn-obtener-salones");
+        
+        
+        const inputSearch = document.querySelector(".input-search > input")
+        const divInputSearch = document.querySelector("#resultado-salones")
+
+        let salones = [];
+
+        
+        const realizaPeticionSalones = ()=>{
+
+            fetch()
+            
+        }
+
+
+        btnObtenerSalones.addEventListener("click",realizaPeticionSalones)
+
     </script>
 </body>
 

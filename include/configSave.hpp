@@ -22,11 +22,12 @@ void guardarConfigWifijson()
     json["modoRegistro"] = modoRegistro;
     json["autorizacion"] = token;
     json["codigoInter"] = codigoIntercambio;
+    json["salon"] = salon;
 
     File f = LittleFS.open("/config.json", "w");
 
     Serial.println("Guardando json:::::");
-
+    serializeJsonPretty(json,Serial); 
     serializeJson(json, f);
     f.close();
 }
@@ -63,7 +64,9 @@ void leerConfigWifiJson()
     rutaApiRegistro = json["rutaApiRegis"].as<String>();
     modoRegistro = json["modoRegistro"].as<bool>();
     token = json["autorizacion"].as<String>();
-    codigoIntercambio = json["codigoInter"].as<String>()  ;
+    codigoIntercambio = json["codigoInter"].as<String>();
+    salon = json["salon"].as<String>();
+
 
     Serial.println("Leyendo json:::::");
     serializeJsonPretty(json,Serial);    

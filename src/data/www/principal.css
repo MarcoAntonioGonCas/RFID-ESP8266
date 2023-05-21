@@ -116,7 +116,7 @@
 .nav {
   height: calc(100vh - var(--heigth-header));
   width: var(--nav-width);
-  position: absolute;
+  position: fixed;
   top: var(--heigth-header);
   box-shadow: 0px 0px 20px 0px rgba(55, 134, 170, 0.342);
   background-color: var(--bg-nav);
@@ -1041,4 +1041,9 @@ body.overflow-hidden{
 }
 .item-status--active::before {
   background-color: rgb(22, 204, 22);
+}
+
+/* INPUT SEARCH */
+.input-search div{
+  height: 0;
 }

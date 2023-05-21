@@ -32,6 +32,10 @@ void loopRestart(){
         }
     }
 }
+
+
+
+
 uint8_t getIdESP(){  
     return ESP.getChipId();
 }
@@ -39,6 +43,13 @@ uint8_t getIdESP(){
 void setNameAP(){
     ssidAP = "RFID_AP" + String(getIdESP());
 }
+
+
+bool wifiConectado()
+{
+  return WiFi.localIP().isSet();
+}
+
 //-----------------------------------------------------------------
 //Helper
 //-----------------------------------------------------------------

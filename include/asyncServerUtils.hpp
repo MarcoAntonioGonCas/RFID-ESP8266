@@ -11,6 +11,7 @@ void obtenerValorDePeticion(AsyncWebServerRequest *req,const char * nombreParame
       valorNuevaConfiguracion.trim();
    }
 
+
 }
 
 /// @brief Obtiene el valor de la peticion web 
