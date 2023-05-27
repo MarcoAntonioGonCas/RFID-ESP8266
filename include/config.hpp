@@ -16,14 +16,28 @@ int puerto = 0;
 //=====================================================
 // Ruta del servidor
 //=====================================================
+//Indica la ruta de nuestro servidor
 String serverIp = "http://192.168.0.104:44355";
+
+//Indica la ruta  en donde se recibira nuestro codigo RFID
 String rutaApi = "/api/AccesoRfid/";
+
+//Indica la ruta  en donde se recibira nuestro codigo RFID para el modo registro
 String rutaApiRegistro = "/api/RegistroRfid/";
 
+
+//En caso de se un servidor https se debera agregar ese certificado
 String certificadoHttps = "";
+
+//Codigo de intercambio para evitar que se envie a todos los usuarios 
 String codigoIntercambio = "";
+
+//Salon en el cual se encuenta el modulo
 String salon = "";
 
+
+
+//indica si el modulo se encuentra en modo registro o modo de acceso
 bool modoRegistro = false;
 
 
