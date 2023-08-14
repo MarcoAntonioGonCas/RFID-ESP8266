@@ -1,9 +1,14 @@
 //Funciones de ESP
 bool restart = false;
 
+
+
+//Variable auxiliar para cear un delay no bloqueante
+//al reiniciar el ESP8266
 static long timeRestartIint = 0;
 
 
+//Funcion para reiniar el esp8266
 void reiniciarESP(){
     asyncServer.end();
         
@@ -13,16 +18,24 @@ void reiniciarESP(){
     delay(200);
     ESP.restart();
 }
+
+//Limpia la configiracion del ESP
 void limpiarConfigESP(){
     ESP.eraseConfig();
 }
+
+
+//Limpia y reinicia el ESP
 void limpiarReiniciarESP(){
     limpiarConfigESP();
     reiniciarESP();
 }
 
 
-
+//=============================================================
+// Metodo que se ejecutara en la funcion loop e indicara
+// si el ESP se debera reiniciar
+//=============================================================
 void loopRestart(){
     if(restart){
         if(timeRestartIint == 0) timeRestartIint = millis();
@@ -35,16 +48,20 @@ void loopRestart(){
 
 
 
-
+//Obtiene el identificador del chip de ESP
 uint8_t getIdESP(){  
     return ESP.getChipId();
 }
 
+
+// Obtiene el nombre para el punto de acceso
+// Concatenando "RFID_AP + el id del chip del ESP"
 void setNameAP(){
     ssidAP = "RFID_AP" + String(getIdESP());
 }
 
 
+//Indica si el wifi se encuentra conectado a una red
 bool wifiConectado()
 {
   return WiFi.localIP().isSet();

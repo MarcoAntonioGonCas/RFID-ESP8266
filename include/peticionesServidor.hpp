@@ -76,9 +76,11 @@ int probarConexionServidor(){
             Serial.println(F("Erro al realizar la peticion"));
             Serial.println(http.errorToString(httpCode));
          }
-         // http.end();
-         // cli->flush();
-         // cli->stop();
+
+         // Limpia la peticion http
+         http.end();
+         cli->flush();
+         cli->stop();
          
     }
 

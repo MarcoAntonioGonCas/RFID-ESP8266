@@ -15,18 +15,20 @@
 #include <ESPAsyncWebServer.h>
 #include <WiFiClientSecure.h>
 
+
+//Obtiene  la memoria libre al iniciar el ESP
 uint32_t stackInicial = ESP.getFreeHeap();
 
 // Objeto en donde indicamos la ruta de nuestro websocket
 AsyncWebSocket asyncSocket("/ws");
+
 // Objeto en donde indicamos el puerto por el cual se ejecutara //nuestro servidor
 AsyncWebServer asyncServer(80);
 DNSServer dnsServer;
 
-// Creamos dos objetos los cuales nos ayudaran a mostrar el estado del Wi-fi
+// Creamos dos objetos leds los cuales nos ayudaran a mostrar el estado del Wi-fi
 // y si se ha leido una tarjeta rfid
 //-----------------------------------------------
-
 ledLibClass ledRFID;
 ledLibClass ledWIFI;
 ledLibClass ledAcceso;
@@ -149,6 +151,9 @@ void setup()
 void loop()
 {
   
+  //Indica si se enviara en mensaje atravez de websocket
+  //El cual inidicara si se establecio conexion exitosa con el 
+  //servidor
   if(enviarEstado){
     enviaEatadoServidorSocket();
     delayMicroseconds(100);

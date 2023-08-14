@@ -3,12 +3,17 @@ const url = window.location.origin;
 const urlWebsocket = `ws://${window.location.hostname}/ws`;
 // const urlWebsocket = `ws://192.168.0.107/ws`;
 let socket;
-//Metodo que contiene todos las operaciones con los sockets ademas de
-//abrir la conexion
-const metodosJson = [];
-const cardWifi = document.querySelector("#card-wifi");
-const labelWifi = cardWifi.querySelector("label")
-const imgWifi = cardWifi.querySelector("img");
+
+
+// Metodo que contiene todos las operaciones con los sockets ademas de
+// abrir la conexion
+
+const callbackJSON = [];
+const cardWifi    = document.querySelector("#card-wifi");
+const labelWifi   = cardWifi.querySelector("label");
+const imgWifi     = cardWifi.querySelector("img");
+const labelIPWifi = document.querySelector("#info-wifi");
+
 
 const limpiarClasesWifi = (element) =>{
   element.classList.remove("label-danger");
@@ -33,13 +38,16 @@ const reciveInfoWsWifi = (json) => {
   const {WiFi,ESP} = json;
   if (!WiFi)return; 
 
-  const { CONECTADO, NOMBRE, RSSI } = WiFi;
+  const { CONECTADO, NOMBRE, RSSI,IP } = WiFi;
   
-  if (CONECTADO) {
+  if(labelIPWifi){
+    labelIPWifi.textContent = `IP: ${IP}`
+  }
 
-    const senial = Math.ceil( map(RSSI,-40,-80,0,3));
-    
+  if (CONECTADO) {
+    const senial = Math.ceil( map(RSSI, -40, -80, 0, 3) );    
     const clase = obtenerClaseWifi(senial);
+
     cardWifi.querySelector(".item-status").classList.add("item-status--active");
     
     labelWifi.innerHTML = RSSI;
@@ -50,9 +58,11 @@ const reciveInfoWsWifi = (json) => {
       imgWifi.src = `www/wifi-${senial}.svg`
     }
 
-
+    
 
   } else {
+
+    
     labelWifi.innerHTML = "Desconectado";
     cardWifi.querySelector(".item-status").classList.remove("item-status--active");
     labelWifi.classList.add("label-danger");
@@ -110,7 +120,7 @@ const conectarSocket = () => {
 
     if(!json)return;
 
-    metodosJson.forEach(metodo =>{
+    callbackJSON.forEach(metodo =>{
       metodo(json);
     })
   }
@@ -122,7 +132,7 @@ const conectarSocket = () => {
 };
 
 conectarSocket();
-metodosJson.push(reciveInfoWsWifi,reciveInfoWsAp);
+callbackJSON.push(reciveInfoWsWifi,reciveInfoWsAp);
 //Parte de codigo que indica si se debe mostrar o cultar el menu
 //desplegable esto haciendo click en la hamburguesa
 const burger = document.querySelector(".burger");

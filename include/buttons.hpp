@@ -1,6 +1,5 @@
 // Variables auxiliares que indican cuanto tiempo esta siendo presiondo en boton
 static ulong tiempoInicialPresionado = 0;
-static ulong tiempoEspera = 4000;
 static ulong tiempoPresionado = 0;
 
 
@@ -42,13 +41,18 @@ void loopButtonAPReset(){
         //Comprobamos el tiempo que estuvo presionado el el boton 
         tiempoPresionado = millis() - tiempoInicialPresionado;
 
+
+        // Si el boton se presiono por mas de 8 segundo borramos la memoria 
         if(tiempoPresionado >= 8000){
             LittleFS.format();
             Serial.println("Memoria del ESP liberada");
         } 
-        else if(tiempoPresionado >= tiempoEspera ){
+        // Si se presiono por mas de 4 segundos
+        else if(tiempoPresionado >= 4000 ){
             Serial.println("Restablecionendo configuraciones...");
             onResetConfi();
+
+        // Si se presiono un poco apagamos o prendemos el AP
         }else if(tiempoPresionado >= 300){
             Serial.println(apHabilitado?"Apagando AP":"Prendiendo AP");
             onAPToogle();

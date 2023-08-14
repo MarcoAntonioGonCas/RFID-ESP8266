@@ -51,6 +51,12 @@ void handleApiGetNetworks(AsyncWebServerRequest *req)
    req->send(response);
 
 }
+
+// -------------------------------------------------------------------
+// Petición para obtener el estado de conexion del servidor
+// url: "/api/estadoServer"
+// Método: GET
+// -------------------------------------------------------------------
 void handleApiGetStatusServer(AsyncWebServerRequest *req){
 
    interrumpirSocked = true;

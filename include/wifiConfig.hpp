@@ -30,6 +30,8 @@ void iniciarAP()
   Serial.println(WiFi.softAPSSID());
   Serial.println(WiFi.softAPIP());
 }
+
+
 //=============================================================
 // Inicia una nueva conexion a una red Wi-Fi
 // Esto con el nombre y contraeña puestos en config.h
@@ -76,82 +78,100 @@ void configurarHora() {
   Serial.println(asctime(&timeinfo));
 }
 
+
+//TODO: Crear funcion para que en 5 minutos se reintente la conexion
+
 //=============================================================
 // Metodo que se ejecutara en la funcion loop e indicara
 // si existe una conexion wifi atravez del led indicador
 //=============================================================
 
-int16_t intentosConexionWifi = 0;
+bool reintentar = false;
 bool seHaConectado = false;
-ulong tiempoIniEstadoWifi = 0;
+int intentosConexionWifi = 0;
+ulong tiempoParaReconexion = 10000;
 
-static bool revisaEstado(){
-  
+static TimeDelayHelper tiempoReintarConexion;
+static TimeDelayHelper delayLoopWifi;
 
-  if(tiempoIniEstadoWifi <= 0){
-    tiempoIniEstadoWifi = millis();
-    return true;
-  }
-
-  if(intentosConexionWifi == -1){
-    return false;
-  } 
-
-  
-
-  if((millis() - tiempoIniEstadoWifi) < 500 ){
-    return false;
-  }
-  if((millis() - tiempoIniEstadoWifi) >= 500){
-    tiempoIniEstadoWifi = millis();
-  }
-
-  return true;
+static void loopWiFiLeds(){
+  if (!wifiConectado() )
+    {
+      ledWIFI.prenderInfinito(1000, 500);
+    }
+    else if(wifiConectado())
+    {
+      ledWIFI.parar();
+      ledWIFI.prender();
+    }
 }
 
-
-void loopWiFiLeds(){
-if (!wifiConectado() )
-  {
-    ledWIFI.prenderInfinito(1000, 500);
-  }
-  else if(wifiConectado())
-  {
-    ledWIFI.parar();
-    ledWIFI.prender();
-  }
-}
-void loopWiFi()
-{
-  loopWiFiLeds();
-  bool estado = revisaEstado();
-
-  if(!estado){
-    return;
-  }
-
-  if(intentosConexionWifi == 30){
-    WiFi.disconnect();
-    Serial.println(F("No se pudo conectar a la red wifi"));
-    intentosConexionWifi = -1;
-    return;
-  }
-
+static void intentaConexion(){
+  // Intenta la conexion a la red wifi codigo no bloqueante 
   if (!wifiConectado() )
   {
     Serial.print(".");
     mostrarInfoWifi = true;
     intentosConexionWifi++;
-
   }
   else if(wifiConectado() and mostrarInfoWifi)
   {
 
-      Serial.printf("Conectado a WIFI %s con ip: %s \n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
-      mostrarInfoWifi = false;
-      seHaConectado = true;
-      configurarHora();
+    Serial.printf("Conectado a WIFI %s con ip: %s \n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+    mostrarInfoWifi = false;
+    seHaConectado = true;
+    configurarHora();
   }
+}
+
+void loopWiFi()
+{
+  loopWiFiLeds();
+  // Delar para ejecutar este llop
+  if(!delayLoopWifi.HanPasado(300,true)){
+    return;
+  }
+
+  
+
+  // Si ya se ha conectado a una red wifi salimos
+
+  if(seHaConectado){
+
+    
+    return;
+  }
+
+  // Si ya pasaron los 30 intentos y tenemos la opcion de reintentar la conexion wifi
+  // Reintentamos de nuevo en 10 segundo
+  if( intentosConexionWifi > 30  &&
+      reintentarConexionWifi &&
+      tiempoReintarConexion.HanPasado(tiempoParaReconexion,true)
+      ){
+        Serial.println("Intentado reconexion WIFI");
+        conectarWiFi();
+        intentosConexionWifi = 0;
+
+        if(tiempoParaReconexion < 100000){
+          tiempoParaReconexion *= 2;
+        }
+  }
+
+  // Si se han realizado 30 intentos
+  // mostramos un mensaje el cual indica que se han superado los intentos para la conexion 
+  // e indicamos en cuanto se realizara el nuevo intento a la red
+  if( intentosConexionWifi == 30 ){
+
+    WiFi.disconnect();
+    Serial.println(F("\nDemasidos intentos no se pudo conectar a la red wifi. Si se ha habilitado la reconexion volveremos a intentarlo"));
+    intentosConexionWifi++;
+
+  }else if(intentosConexionWifi < 30){
+
+    intentaConexion();
+
+  }
+
 }
 
 
@@ -162,7 +182,7 @@ void configAPWIFI()
 {
   
   WiFi.mode(WiFiMode::WIFI_AP_STA);
-  WiFi.softAPConfig(apIp, IPAddress(192,168,0,254), IPAddress(255, 255, 255, 0));
+  WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
   WiFi.setAutoReconnect(true);
   WiFi.persistent(false);
 }

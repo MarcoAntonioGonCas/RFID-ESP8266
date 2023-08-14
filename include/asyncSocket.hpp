@@ -1,5 +1,5 @@
 // Documento json que contendra informacion para ls clientes sockets conectados
-StaticJsonDocument<300> jsonWS;
+StaticJsonDocument<400> jsonWS;
 String jsonStrWS;
 
 // Variables auxiliares para controlar cada cierto tiempo se
@@ -24,17 +24,21 @@ static void comprobarClientesWs(ulong_t comprobarCada, AsyncWebSocket &socket)
    }
 }
 
-//=============================================================
+//==============================================================
 // Envia informacio sobre Wi-Fi a clientes websockets conectados
+//==============================================================
 void enviarInfoWs(AsyncWebSocket &socket)
 {
 
+   // Si no hay clientes sockets
    if (socket.count() == 0)
       return;
-   JsonObject ob = jsonWS.createNestedObject("WiFi");
-   ob["CONECTADO"] = wifiConectado();
-   ob["NOMBRE"] = WiFi.SSID();
-   ob["RSSI"] = WiFi.RSSI();
+
+   JsonObject obInfoWifi = jsonWS.createNestedObject("WiFi");
+   obInfoWifi["CONECTADO"] = wifiConectado();
+   obInfoWifi["NOMBRE"] = WiFi.SSID();
+   obInfoWifi["RSSI"] = WiFi.RSSI();
+   obInfoWifi["IP"] = WiFi.localIP().toString();
 
    JsonObject infoESP = jsonWS.createNestedObject("ESP");
    FSInfo info;
