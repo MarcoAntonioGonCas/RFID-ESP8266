@@ -50,6 +50,7 @@ void loopRestart(){
 
 //Obtiene el identificador del chip de ESP
 uint8_t getIdESP(){  
+    
     return ESP.getChipId();
 }
 

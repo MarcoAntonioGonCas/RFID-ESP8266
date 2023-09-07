@@ -372,7 +372,7 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
    cambioProxy = postProxyAux(req);
    change = postWiFiAux(req) | postApAux(req);
 
-   Serial.println("POST API AP GUardao comopleto en memoria");
+   Serial.println("POST API AP guardado completo en memoria");
 
    
    //Configurar
@@ -380,6 +380,7 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
       guardarConfigjson();
       enviarHtmlCarga(req,5000,"/confiWifi");
       restart = true;
+
    }else{
 
       if(cambioProxy){
@@ -392,10 +393,34 @@ void handleWifiConfigPost(AsyncWebServerRequest *req)
       req->send(response);
    }
 }
+// -------------------------------------------------------------------
+// Petición para obtener la pagina de login
+// url: "update/"
+// Método: POST
+// -------------------------------------------------------------------
+void handleUpdatePost(AsyncWebServerRequest *req)
+{
+   
+   if(req->hasParam("archivo",true,true)){
+      
+      AsyncWebParameter* p = req->getParam("archivo",true,true);
 
+      if(p->isFile()){ //p->isPost() is also true
+         Serial.printf("FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
+      } else if(p->isPost()){
+         Serial.printf("POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
+      } else {
+         Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+      }
+
+   }
+   
+   req->send(LittleFS, "/login.html", "text/html");
+}
 //-------------------------------------------------------------------
 // Indica en que parte de la memoria se encuentran los archivos
 // estaticos para el servidor
+//-------------------------------------------------------------------
 void filesStatic(AsyncWebServer &async)
 {
    async.serveStatic("/www", LittleFS, "/www/");

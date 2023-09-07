@@ -70,23 +70,27 @@ void listDirSerial(String dirName,uint16 nivel = 0){
 // -------------------------------------------------------------------
 // Lista los archivos que estan en el ESP en un JSON
 // -------------------------------------------------------------------
-void listFiles(DynamicJsonDocument& jsonDoc, const String& dirname) {
+void listFiles(JsonArray jsonDoc, const String& dirname) {
+
+
   Dir dir = LittleFS.openDir(dirname);
 
   while (dir.next()) {
-    String fileName = dir.fileName();
+    String nombre = dir.fileName();
 
     if (dir.isDirectory()) {
-      DynamicJsonDocument subDirDoc(1024);
-      JsonObject subDir = subDirDoc.to<JsonObject>();
-      subDir["name"] = fileName;
-      subDir["type"] = "directory";
-      JsonArray files = subDir.createNestedArray("files");
-      listFiles(subDirDoc, dirname + "/" + fileName);
+
+      JsonObject subDir = jsonDoc.createNestedObject();
+      subDir["nombre"] = nombre;
+      subDir["tipo"] = "Directorio";
+      JsonArray archivos = subDir.createNestedArray("Archivos");
+      
+
+      listFiles(archivos, dirname + "/" + nombre);
       jsonDoc.add(subDir);
     } else {
       JsonObject file = jsonDoc.createNestedObject();
-      file["name"] = fileName;
+      file["name"] = nombre;
       file["type"] = "file";
     }
   }
@@ -98,12 +102,22 @@ void listFiles(DynamicJsonDocument& jsonDoc, const String& dirname) {
 // Método: GET
 // -------------------------------------------------------------------
 void handleLisDirGet(AsyncWebServerRequest *req){
-   DynamicJsonDocument jsonDirec (2000);
+   DynamicJsonDocument jsonDirec (3000);
    String cadenaDirec;
 
-   listFiles(jsonDirec,"/");
+   listFiles(jsonDirec.to<JsonArray>(),"/");
    listDirSerial("/");
    serializeJson(jsonDirec,cadenaDirec);
    req->send(200,"application/json",cadenaDirec);
 }
 
+
+
+// -------------------------------------------------------------------
+// Indica si el usuario actual a iniciado sesion correctamente
+// Método: Helper middlewares
+// -------------------------------------------------------------------
+bool UsuarioCorrecto(AsyncWebServerRequest *req){
+
+   
+}

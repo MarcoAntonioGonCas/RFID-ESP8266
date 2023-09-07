@@ -31,7 +31,6 @@ void iniciarAP()
   Serial.println(WiFi.softAPIP());
 }
 
-
 //=============================================================
 // Inicia una nueva conexion a una red Wi-Fi
 // Esto con el nombre y contraeña puestos en config.h
@@ -50,6 +49,7 @@ void conectarWiFi()
 }
 
 
+
 //REGION loops que se ejecutaran en el codigo principal loop() en main.cpp
 void loopAP(){
   
@@ -65,6 +65,9 @@ void configurarHora() {
 
   Serial.println("Sincronizando hora: ");
   time_t now = time(nullptr);
+
+
+  // Solo realizamos 30 intentos
   while (now < 8 * 3600 * 2 and intentos < 30 ) {
       delay(500);
       Serial.print(".");
@@ -111,8 +114,8 @@ static void intentaConexion(){
   if (!wifiConectado() )
   {
     Serial.print(".");
-    mostrarInfoWifi = true;
     intentosConexionWifi++;
+    mostrarInfoWifi = true;
   }
   else if(wifiConectado() and mostrarInfoWifi)
   {
@@ -127,18 +130,15 @@ static void intentaConexion(){
 void loopWiFi()
 {
   loopWiFiLeds();
-  // Delar para ejecutar este llop
+  // Delay para ejecutar este loop
   if(!delayLoopWifi.HanPasado(300,true)){
     return;
   }
 
   
 
-  // Si ya se ha conectado a una red wifi salimos
-
+  // Si ya se ha conectado a una red wifi salimos del metodo
   if(seHaConectado){
-
-    
     return;
   }
 
@@ -152,7 +152,10 @@ void loopWiFi()
         conectarWiFi();
         intentosConexionWifi = 0;
 
+        // Si el tiempo actual para la reconexion es menor de 100000 milisegunodos 10 segundos 
+        // aumentamos lo milisegundos * 2 hasta llegar a los 100000 milisegundos o más
         if(tiempoParaReconexion < 100000){
+
           tiempoParaReconexion *= 2;
         }
   }
@@ -181,7 +184,7 @@ void loopWiFi()
 void configAPWIFI()
 {
   
-  WiFi.mode(WiFiMode::WIFI_AP_STA);
+  WiFi.mode(WiFiMode_t::WIFI_AP_STA);
   WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
   WiFi.setAutoReconnect(true);
   WiFi.persistent(false);
